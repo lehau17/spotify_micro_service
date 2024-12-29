@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { StatusUser } from '@prisma/client';
 import { RpcException } from '@nestjs/microservices';
 import { TokenPayload } from 'src/common/jwt/access_token.dto';
@@ -40,7 +40,7 @@ export class UserService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    if (!bcrypt.compareSync(foundUser.password, password)) {
+    if (!bcrypt.compareSync(password, foundUser.password)) {
       throw new RpcException({
         message: 'Username or password incorrect',
         statusCode: HttpStatus.BAD_REQUEST,
@@ -99,6 +99,7 @@ export class UserService {
     const newUser = await this.prismaService.users.create({
       data: {
         ...payload,
+        password: bcrypt.hashSync(payload.password, 10),
         status: StatusUser.IsPendingVerifyEmail,
         role: {
           connect: {
