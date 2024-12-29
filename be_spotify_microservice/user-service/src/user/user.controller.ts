@@ -4,6 +4,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register-user.dto';
 
 @Controller()
 export class UserController {
@@ -17,6 +18,11 @@ export class UserController {
   @MessagePattern('login')
   login(@Payload() Payload: LoginDto) {
     return this.userService.login(Payload);
+  }
+
+  @MessagePattern('register')
+  register(@Payload() Payload: RegisterDto) {
+    return this.userService.register(Payload);
   }
 
   @MessagePattern('findAllUser')

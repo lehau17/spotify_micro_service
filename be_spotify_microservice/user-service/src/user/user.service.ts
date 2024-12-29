@@ -36,7 +36,7 @@ export class UserService {
     });
     if (!foundUser || foundUser.status === StatusUser.Disable) {
       throw new RpcException({
-        message: 'User with username ' + username + 'not found',
+        message: 'User with username ' + username + ' not found',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }

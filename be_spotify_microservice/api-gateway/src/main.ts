@@ -16,6 +16,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // Báo lỗi nếu có thuộc tính không hợp lệ
     }),
   );
+  app.enableCors();
 
   const swagger = new DocumentBuilder()
     .setTitle('Spotify API Documentation')
@@ -30,7 +31,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, swagger);
-  SwaggerModule.setup('', app, document);
+  SwaggerModule.setup('api', app, document);
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
   app.use(helmet());
