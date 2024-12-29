@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Roles } from '../demos/roles.decorator';
-import { JwtPayload } from '../stategy/accessToken.stategy';
+import { TokenPayload } from '../types/jwt.type';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -19,8 +19,8 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest<Request>();
-    const user = request.user as JwtPayload;
-    if (!roles.includes(user.role.role_name.toUpperCase()))
+    const user = request.user as TokenPayload;
+    if (!roles.includes(user.role[0].toUpperCase()))
       throw new ForbiddenException();
     return true;
   }
