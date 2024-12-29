@@ -11,6 +11,8 @@ import { TokenPayload } from 'src/common/jwt/access_token.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginResponse } from './dto/response/login.response.dto';
+import { RegisterDto } from './dto/register-user.dto';
+import { RegisterResponseDto } from './dto/response/register.response.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -49,6 +51,16 @@ export class UserService {
       id: foundUser.id,
       role: [foundUser.role.name],
     });
+    if (token && token.refreshToken) {
+      await this.prismaService.users.update({
+        where: {
+          id: foundUser.id,
+        },
+        data: {
+          refreshToken: token.refreshToken,
+        },
+      });
+    }
     return {
       info_user: foundUser,
       token,
@@ -69,6 +81,42 @@ export class UserService {
       }),
     ]);
     return { accessToken, refreshToken };
+  }
+
+  async register(payload: RegisterDto): Promise<RegisterResponseDto> {
+    // check user email
+    const foundUser = await this.prismaService.users.findFirst({
+      where: {
+        account: payload.account,
+      },
+    });
+    if (foundUser) {
+      throw new RpcException({
+        message: 'User already registered',
+        statusCode: 400,
+      });
+    }
+    const newUser = await this.prismaService.users.create({
+      data: {
+        ...payload,
+        status: StatusUser.IsPendingVerifyEmail,
+        role: {
+          connect: {
+            id: 1,
+          },
+        },
+      },
+    });
+    if (!newUser)
+      throw new RpcException({
+        message: 'Có lỗi xảy ra khi tạo user',
+        statusCode: 500,
+      });
+    const token = await this.generateToken({ id: newUser.id, role: ['USER'] });
+    return {
+      info_user: newUser,
+      token,
+    };
   }
 
   findAll() {
