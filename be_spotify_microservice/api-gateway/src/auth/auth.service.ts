@@ -10,7 +10,7 @@ export class AuthService {
   async login(payload: LoginDto) {
     return lastValueFrom(
       this.userService
-        .send('loginUser', payload)
+        .send('login', payload)
         .pipe(handleRetryWithBackoff(3, 2000)),
     );
   }

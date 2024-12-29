@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import * as compression from 'compression';
 import { HttpExceptionFilter } from './common/filters/HttpException';
 import { TransformInterceptor } from './common/interceptors/handler_response';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,21 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // Báo lỗi nếu có thuộc tính không hợp lệ
     }),
   );
+
+  const swagger = new DocumentBuilder()
+    .setTitle('Spotify API Documentation')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'token',
+      },
+      'access_token',
+    )
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, swagger);
+  SwaggerModule.setup('', app, document);
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
   app.use(helmet());
