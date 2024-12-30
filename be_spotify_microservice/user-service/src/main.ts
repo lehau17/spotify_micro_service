@@ -13,7 +13,7 @@ async function bootstrap() {
         queueOptions: {
           durable: true,
         },
-        persistent: false,
+        persistent: false,  
       },
     },
   );
