@@ -10,6 +10,7 @@ import { RedisThrottlerStorageService } from './RedisThrottlerStorage/throttler-
 import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
 import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
 import { AccessTokenGuard } from './common/guards/accessToken.guard';
+import { PrivateThrottlerGuard } from './common/guards/private.rate_limiter.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -57,6 +58,21 @@ async function bootstrap() {
       ['/auth/login', '/auth/register'],
     ),
     new AccessTokenGuard(reflector),
+    new PrivateThrottlerGuard(
+      {
+        throttlers: [
+          {
+            limit: 5,
+            ttl: 60,
+            name: 'rate-limit:public',
+            getTracker: (req: Record<string, any>, context: ExecutionContext) =>
+              'rate-limit:public',
+          },
+        ],
+      },
+      redisStore,
+      reflector,
+    ),
   );
 
   const swagger = new DocumentBuilder()
