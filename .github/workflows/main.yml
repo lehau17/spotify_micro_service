@@ -46,7 +46,6 @@ jobs:
 
             cd ./spotify_micro_service
 
-            cat .env
 
             echo 'JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}' > .env 
             echo 'JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}' >> .env 
