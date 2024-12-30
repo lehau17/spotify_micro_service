@@ -3,6 +3,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { FollowingService } from './following.service';
 import { CreateFollowingDto } from './dto/create-following.dto';
 import { UpdateFollowingDto } from './dto/update-following.dto';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Controller()
 export class FollowingController {
@@ -14,8 +15,8 @@ export class FollowingController {
   }
 
   @MessagePattern('findAllFollowing')
-  findAll() {
-    return this.followingService.findAll();
+  findAll(@Payload() payload: PagingDto) {
+    return this.followingService.getListFollowingByUser(payload);
   }
 
   @MessagePattern('findOneFollowing')
@@ -25,11 +26,14 @@ export class FollowingController {
 
   @MessagePattern('updateFollowing')
   update(@Payload() updateFollowingDto: UpdateFollowingDto) {
-    return this.followingService.update(updateFollowingDto.id, updateFollowingDto);
+    return this.followingService.update(
+      updateFollowingDto.id,
+      updateFollowingDto,
+    );
   }
 
   @MessagePattern('removeFollowing')
-  remove(@Payload() id: number) {
-    return this.followingService.remove(id);
+  remove(@Payload() { id, user_id }: { id: number; user_id: number }) {
+    return this.followingService.remove(id, user_id);
   }
 }
