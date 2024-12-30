@@ -51,6 +51,8 @@ jobs:
               git pull origin main
             fi
 
+            cd ./spotify_micro_service
+
             # Chạy Docker-compose
             echo "Dừng các container đang chạy..."
             docker-compose down || echo "Không có container nào đang chạy."
