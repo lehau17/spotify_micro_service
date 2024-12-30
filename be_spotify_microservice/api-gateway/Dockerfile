@@ -7,7 +7,8 @@ RUN yarn install
 
 COPY . .
 
-
+RUN yarn install
+RUN yarn config set network-timeout 600000
 
 
 RUN yarn build
