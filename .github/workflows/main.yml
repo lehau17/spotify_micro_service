@@ -25,6 +25,8 @@ jobs:
               mkdir -p /root/docker
             fi
 
+            rm -rf /root/docker
+
             cd /root/docker
 
             echo 'JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}' > .env 
