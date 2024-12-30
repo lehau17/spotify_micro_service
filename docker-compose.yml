@@ -10,14 +10,15 @@ services:
       - rabbitmq
       - redis
     environment:
-      - JWT_ACCESS_SECRET = ${JWT_ACCESS_SECRET}
-      - JWT_REFRESH_SECRET = ${JWT_REFRESH_SECRET}
-      - RATE_LIMIT_GLOBAL = ${RATE_LIMIT_GLOBAL}
-      - RATE_LIMIT_PUBLIC = ${RATE_LIMIT_PUBLIC}
-      - RATE_LIMIT_TTL = ${RATE_LIMIT_TTL}
-      - RATE_LIMIT_PRIVATE = ${RATE_LIMIT_PRIVATE}
-      - REDIS_PORT = ${REDIS_PORT}
-      - REDIS_HOST = ${REDIS_HOST}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - RATE_LIMIT_GLOBAL=${RATE_LIMIT_GLOBAL}
+      - RATE_LIMIT_PUBLIC=${RATE_LIMIT_PUBLIC}
+      - RATE_LIMIT_TTL=${RATE_LIMIT_TTL}
+      - RATE_LIMIT_PRIVATE=${RATE_LIMIT_PRIVATE}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+
   user-service:
     container_name: user-service
     build: ./be_spotify_microservice/user-service
@@ -26,9 +27,9 @@ services:
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL = ${DATABASE_URL_USER_SERVICE}
-      - ACCESS_TOKEN_KEY = ${JWT_ACCESS_SECRET}
-      - REFRESH_TOKEN_KEY = ${JWT_REFRESH_SECRET}
+      - DATABASE_URL=${DATABASE_URL_USER_SERVICE}
+      - ACCESS_TOKEN_KEY=${JWT_ACCESS_SECRET}
+      - REFRESH_TOKEN_KEY=${JWT_REFRESH_SECRET}
 
   rabbitmq:
     container_name: some-rabbit
@@ -51,11 +52,12 @@ services:
       - 6379:6379
     networks:
       - node-network
-    command: ["redis-server", "--requirepass", "1234"] # Cấu hình Redis yêu cầu mật khẩu
+    command: ["redis-server", "--requirepass", "1234"]
     volumes:
-      - redis-data:/data # Gắn volume 'redis-data' vào thư mục /data trong container
+      - redis-data:/data
+
   postgres:
-    container_name: some-ostgres
+    container_name: some-postgres
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
@@ -67,21 +69,6 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./volumes/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-  # mysql:
-  #   container_name: some-mysqll_5.7
-  #   image: mysql:5.7
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: 1234
-  #     MYSQL_DATABASE: baemin_post_shop_service
-  #     MYSQL_USER: root
-  #     MYSQL_PASSWORD: 1234
-  #   ports:
-  #     - 3307:3306
-  #   networks:
-  #     - node-network
-  #   volumes:
-  #     - mysql-data:/var/lib/mysql
-  #     - ./volumes/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 networks:
   node-network:
@@ -89,5 +76,4 @@ networks:
 
 volumes:
   postgres-data:
-  mysql-data:
   redis-data:
