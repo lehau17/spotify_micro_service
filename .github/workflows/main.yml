@@ -21,41 +21,41 @@ jobs:
             set -e
 
             if [ ! -d "/root/docker" ]; then
-              echo "Thư mục /root/docker không tồn tại. Tạo mới..."
-              mkdir -p /root/docker
+                echo "Thư mục /root/docker không tồn tại. Tạo mới..."
+                mkdir -p /root/docker
             fi
 
             rm -rf /root/docker
-
             mkdir -p /root/docker
-
             cd /root/docker
 
-
-
-
-
             if [ ! -d ".git" ]; then
-              echo "Repo chưa được clone. Tiến hành clone..."
-              git clone https://github.com/lehau17/spotify_micro_service.git  # Thay YOUR_REPO bằng repo của bạn
-
+                echo "Repo chưa được clone. Tiến hành clone..."
+                git clone https://github.com/lehau17/spotify_micro_service.git
             else
-              echo "Repo đã tồn tại. Pull code mới nhất..."
-              git pull origin main
+                echo "Repo đã tồn tại. Pull code mới nhất..."
+                git pull origin main
             fi
 
             cd ./spotify_micro_service
 
+            # Write secrets to the .env file, ensuring proper handling
+            printf "JWT_ACCESS_SECRET=\"%s\"\n" "${{ secrets.JWT_ACCESS_SECRET }}" > .env
+            printf "JWT_REFRESH_SECRET=\"%s\"\n" "${{ secrets.JWT_REFRESH_SECRET }}" >> .env
+            printf "RATE_LIMIT_GLOBAL=\"%s\"\n" "${{ secrets.RATE_LIMIT_GLOBAL }}" >> .env
+            printf "RATE_LIMIT_PUBLIC=\"%s\"\n" "${{ secrets.RATE_LIMIT_PUBLIC }}" >> .env
+            printf "RATE_LIMIT_TTL=\"%s\"\n" "${{ secrets.RATE_LIMIT_TTL }}" >> .env
+            printf "RATE_LIMIT_PRIVATE=\"%s\"\n" "${{ secrets.RATE_LIMIT_PRIVATE }}" >> .env
+            printf "REDIS_PORT=\"%s\"\n" "${{ secrets.REDIS_PORT }}" >> .env
+            printf "REDIS_HOST=\"%s\"\n" "${{ secrets.REDIS_HOST }}" >> .env
+            printf "DATABASE_URL_USER_SERVICE=\"%s\"\n" "${{ secrets.DATABASE_URL_USER_SERVICE }}" >> .env
 
-
-
-
-            # Chạy Docker-compose
+            # Docker commands
             echo "Dừng các container đang chạy..."
             docker-compose down || echo "Không có container nào đang chạy."
 
             echo "Build lại các container..."
-            docker-compose build || echo "Không có container nào để buld lại"
+            docker-compose build || echo "Không có container nào để build lại"
 
             echo "Khởi chạy các container..."
             docker-compose up -d
@@ -64,9 +64,9 @@ jobs:
             echo "Dọn dẹp các hình ảnh Docker không dùng..."
             dangling_images=$(docker images -f "dangling=true" -q)
             if [ -n "$dangling_images" ]; then
-              echo "$dangling_images" | xargs docker rmi || echo "Không thể xóa các hình ảnh."
+                echo "$dangling_images" | xargs docker rmi || echo "Không thể xóa các hình ảnh."
             else
-              echo "Không có hình ảnh Docker nào cần dọn dẹp."
+                echo "Không có hình ảnh Docker nào cần dọn dẹp."
             fi
 
             echo "Quá trình triển khai hoàn tất!"
