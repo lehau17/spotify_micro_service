@@ -88,7 +88,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, swagger);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
   app.use(helmet(), compression());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(
