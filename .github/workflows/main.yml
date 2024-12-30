@@ -47,15 +47,16 @@ jobs:
             cd ./spotify_micro_service
 
 
-            echo 'JWT_ACCESS_SECRET=${{secrets.JWT_ACCESS_SECRET}}' > .env 
-            echo 'JWT_REFRESH_SECRET=${{secrets.JWT_REFRESH_SECRET}}' >> .env 
-            echo 'RATE_LIMIT_GLOBAL=${{secrets.RATE_LIMIT_GLOBAL}}' >> .env 
-            echo 'RATE_LIMIT_PUBLIC=${{secrets.RATE_LIMIT_PUBLIC}}' >> .env 
-            echo 'RATE_LIMIT_TTL=${{secrets.RATE_LIMIT_TTL}}' >> .env 
-            echo 'RATE_LIMIT_PRIVATE=${{secrets.RATE_LIMIT_PRIVATE}}' >> .env 
-            echo 'REDIS_PORT=${{secrets.REDIS_PORT}}' >> .env 
-            echo 'REDIS_HOST=${{secrets.REDIS_HOST}}' >> .env 
-            echo 'DATABASE_URL_USER_SERVICE=${{secrets.DATABASE_URL_USER_SERVICE}}' >> .env 
+            echo 'JWT_ACCESS_SECRET=${{secrets.JWT_ACCESS_SECRET}}' > .env
+            echo 'JWT_REFRESH_SECRET=${{secrets.JWT_REFRESH_SECRET}}' >> .env
+            echo 'RATE_LIMIT_GLOBAL=${{secrets.RATE_LIMIT_GLOBAL}}' >> .env
+            echo 'RATE_LIMIT_PUBLIC=${{secrets.RATE_LIMIT_PUBLIC}}' >> .env
+            echo 'RATE_LIMIT_TTL=${{secrets.RATE_LIMIT_TTL}}' >> .env
+            echo 'RATE_LIMIT_PRIVATE=${{secrets.RATE_LIMIT_PRIVATE}}' >> .env
+            echo 'REDIS_PORT=${{secrets.REDIS_PORT}}' >> .env
+            echo 'REDIS_HOST=${{secrets.REDIS_HOST}}' >> .env
+            echo 'DATABASE_URL_USER_SERVICE=${{secrets.DATABASE_URL_USER_SERVICE}}' >> .env
+
 
             # Chạy Docker-compose
             echo "Dừng các container đang chạy..."
