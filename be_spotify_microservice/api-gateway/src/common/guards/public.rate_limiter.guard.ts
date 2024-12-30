@@ -2,8 +2,6 @@ import {
   ThrottlerException,
   ThrottlerGuard,
   ThrottlerModuleOptions,
-  ThrottlerOptions,
-  ThrottlerRequest,
   ThrottlerStorage,
 } from '@nestjs/throttler';
 import { ExecutionContext, Injectable } from '@nestjs/common';
@@ -45,7 +43,6 @@ export class PublicThrottlerGuard extends ThrottlerGuard {
     const request = context.switchToHttp().getRequest();
     const url = request.url as string;
     if (!this.apis.includes(url)) {
-      console.log('bỏ qua những api không public');
       return true;
     }
     const key = await this.getTracker(request);

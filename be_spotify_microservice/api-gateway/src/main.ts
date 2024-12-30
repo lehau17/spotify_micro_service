@@ -6,11 +6,10 @@ import * as compression from 'compression';
 import { HttpExceptionFilter } from './common/filters/HttpException';
 import { TransformInterceptor } from './common/interceptors/handler_response';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { GlobalRateLimitInterceptor } from './common/interceptors/ThrottlerInterceptor';
 import { RedisThrottlerStorageService } from './RedisThrottlerStorage/throttler-redis.service';
-import { ConfigService } from '@nestjs/config';
 import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
 import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
+import { AccessTokenGuard } from './common/guards/accessToken.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -57,6 +56,7 @@ async function bootstrap() {
       reflector,
       ['/auth/login', '/auth/register'],
     ),
+    new AccessTokenGuard(reflector),
   );
 
   const swagger = new DocumentBuilder()

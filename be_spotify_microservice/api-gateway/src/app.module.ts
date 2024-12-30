@@ -9,6 +9,8 @@ import Redis from 'ioredis';
 import { RedisThrottlerStorageService } from './RedisThrottlerStorage/throttler-redis.service';
 import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
 import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
+import { AccessTokenStrategy } from './common/stategy/accessToken.stategy';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -16,8 +18,14 @@ import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard'
     AuthModule,
     ConfigModule.forRoot(), // Cấu hình .env
     ThrottlerModule.forRoot(),
+    JwtModule.register({ global: true }),
   ],
   controllers: [AppController],
-  providers: [AppService, RedisThrottlerStorageService],
+  providers: [
+    AppService,
+    RedisThrottlerStorageService,
+    AccessTokenStrategy,
+    JwtService,
+  ],
 })
 export class AppModule {}
