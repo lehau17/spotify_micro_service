@@ -10,6 +10,7 @@ import { GlobalRateLimitInterceptor } from './common/interceptors/ThrottlerInter
 import { RedisThrottlerStorageService } from './RedisThrottlerStorage/throttler-redis.service';
 import { ConfigService } from '@nestjs/config';
 import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
+import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,25 +22,42 @@ async function bootstrap() {
     }),
   );
   app.enableCors();
+  const redisStore = new RedisThrottlerStorageService();
+  const reflector = new Reflector();
 
-  // global rate limit
-  // app.useGlobalGuards(
-  //   new GlobalThrottlerGuard(
-  //     {
-  //       throttlers: [
-  //         {
-  //           limit: 5,
-  //           ttl: 60,
-  //           name: 'rate-limit:global',
-  //           getTracker: (req: Record<string, any>, context: ExecutionContext) =>
-  //             'rate-limit:global',
-  //         },
-  //       ],
-  //     },
-  //     new RedisThrottlerStorageService(),
-  //     new Reflector(),
-  //   ),
-  // );
+  app.useGlobalGuards(
+    new GlobalThrottlerGuard(
+      {
+        throttlers: [
+          {
+            limit: 5,
+            ttl: 60,
+            name: 'rate-limit:global',
+            getTracker: (req: Record<string, any>, context: ExecutionContext) =>
+              'rate-limit:global',
+          },
+        ],
+      },
+      redisStore,
+      reflector,
+    ),
+    new PublicThrottlerGuard(
+      {
+        throttlers: [
+          {
+            limit: 5,
+            ttl: 60,
+            name: 'rate-limit:public',
+            getTracker: (req: Record<string, any>, context: ExecutionContext) =>
+              'rate-limit:public',
+          },
+        ],
+      },
+      redisStore,
+      reflector,
+      ['/auth/login', '/auth/register'],
+    ),
+  );
 
   const swagger = new DocumentBuilder()
     .setTitle('Spotify API Documentation')

@@ -36,6 +36,7 @@ export class GlobalThrottlerGuard extends ThrottlerGuard {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('global canActivate');
     const request = context.switchToHttp().getRequest();
     // const key = 'rate-limit:global';
     const key = await this.getTracker(request);

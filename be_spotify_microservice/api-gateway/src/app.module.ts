@@ -8,31 +8,16 @@ import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import Redis from 'ioredis';
 import { RedisThrottlerStorageService } from './RedisThrottlerStorage/throttler-redis.service';
 import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
+import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     ConfigModule.forRoot(), // Cấu hình .env
-    ThrottlerModule.forRootAsync({
-      useFactory: () => {
-        return {
-          // storage: new RedisThrottlerStorageService(),
-          throttlers: [{ ttl: 60, limit: 5, name: 'rate-limit:global' }],
-          getTracker: (req: Record<string, any>, context: ExecutionContext) =>
-            'rate-limit:global',
-        };
-      },
-    }),
+    ThrottlerModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    RedisThrottlerStorageService,
-    {
-      provide: 'APP_GUARD', // Đặt guard toàn cục
-      useClass: GlobalThrottlerGuard,
-    },
-  ],
+  providers: [AppService, RedisThrottlerStorageService],
 })
 export class AppModule {}
