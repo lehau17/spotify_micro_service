@@ -47,8 +47,8 @@ jobs:
             cd ./spotify_micro_service
 
 
-            echo 'JWT_ACCESS_SECRET=${{secrets.JWT_ACCESS_SECRET}}' > .env
-            echo 'JWT_REFRESH_SECRET=${{secrets.JWT_REFRESH_SECRET}}' >> .env
+            # echo 'JWT_ACCESS_SECRET=${{secrets.JWT_ACCESS_SECRET}}' > .env
+            echo 'JWT_REFRESH_SECRET=${{secrets.JWT_REFRESH_SECRET}}' > .env
             echo 'RATE_LIMIT_GLOBAL=${{secrets.RATE_LIMIT_GLOBAL}}' >> .env
             echo 'RATE_LIMIT_PUBLIC=${{secrets.RATE_LIMIT_PUBLIC}}' >> .env
             echo 'RATE_LIMIT_TTL=${{secrets.RATE_LIMIT_TTL}}' >> .env
