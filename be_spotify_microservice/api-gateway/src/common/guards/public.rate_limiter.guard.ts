@@ -32,10 +32,10 @@ export class PublicThrottlerGuard extends ThrottlerGuard {
   }
 
   protected getTracker(req: Record<string, any>): Promise<string> {
+    const ip = req.ip;
     const url = req.url;
-    console.log('check url', url);
     return new Promise<string>((resolve, reject) => {
-      return resolve(`rate-limit:public:${url}`);
+      return resolve(`${ip}-${url}`);
     });
   }
 
@@ -49,7 +49,7 @@ export class PublicThrottlerGuard extends ThrottlerGuard {
 
     const rateLimitPublic = await this.redis.get(key);
     if (rateLimitPublic && +rateLimitPublic >= this.limit) {
-      throw new ThrottlerException('Too many requests');
+      throw new ThrottlerException();
     }
 
     const ttl = await this.redis.ttl(key);
