@@ -52,7 +52,7 @@ jobs:
             docker-compose down || echo "Không có container nào đang chạy."
 
             echo "Build lại các container..."
-            docker-compose build
+            docker-compose build || echo "Không có container nào để buld lại"
 
             echo "Khởi chạy các container..."
             docker-compose up -d
