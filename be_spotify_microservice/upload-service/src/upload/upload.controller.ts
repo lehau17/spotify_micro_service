@@ -1,10 +1,10 @@
 import { ConfigService } from '@nestjs/config';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { UploadService } from './upload.service';
 import * as fs from 'fs';
 import slugify from 'slugify';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { UploadService } from './upload.service';
 
 @Controller()
 export class UploadController {
@@ -37,11 +37,9 @@ export class UploadController {
     );
   }
   @MessagePattern('mp3')
-  async uploadMp3(@Payload() file: Express.Multer.File) {
-    const result = await this.uploadService.uploadFile(file);
-    return {
-      url: result.secure_url, // URL trả về từ Cloudinary
-    };
+  async uploadMp3(@Payload() buffer: Express.Multer.File) {
+    const result = await this.uploadService.uploadFile(buffer);
+    return result.secure_url;
   }
 
   @MessagePattern('uploadFile')

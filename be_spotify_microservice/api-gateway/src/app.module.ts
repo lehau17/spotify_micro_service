@@ -13,9 +13,16 @@ import { AccessTokenStrategy } from './common/stategy/accessToken.stategy';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { FolowingModule } from './folowing/folowing.module';
 import { GerneModule } from './gerne/gerne.module';
+import { UpdateModule } from './update/update.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // Đảm bảo đường dẫn đúng
+      serveRoot: '/uploads', // URL public của thư mục
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     ConfigModule.forRoot(), // Cấu hình .env
@@ -23,6 +30,7 @@ import { GerneModule } from './gerne/gerne.module';
     JwtModule.register({ global: true }),
     FolowingModule,
     GerneModule,
+    UpdateModule,
   ],
   controllers: [AppController],
   providers: [
