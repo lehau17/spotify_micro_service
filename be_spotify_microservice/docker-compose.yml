@@ -10,6 +10,7 @@ services:
       - node-network
     depends_on:
       - rabbitmq
+      - redis
   user-service:
     container_name: user-service
     build: ./user-service

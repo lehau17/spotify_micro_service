@@ -4,23 +4,26 @@ import { FollowingService } from './following.service';
 import { CreateFollowingDto } from './dto/create-following.dto';
 import { UpdateFollowingDto } from './dto/update-following.dto';
 import { PagingDto } from 'src/common/paging/paging.dto';
+import { Following } from './entities/following.entity';
 
 @Controller()
 export class FollowingController {
   constructor(private readonly followingService: FollowingService) {}
 
   @MessagePattern('createFollowing')
-  create(@Payload() createFollowingDto: CreateFollowingDto) {
+  create(
+    @Payload() createFollowingDto: CreateFollowingDto,
+  ): Promise<Following> {
     return this.followingService.create(createFollowingDto);
   }
 
   @MessagePattern('findAllFollowing')
-  findAll(@Payload() payload: PagingDto) {
+  findAll(@Payload() payload: PagingDto): Promise<Following[]> {
     return this.followingService.getListFollowingByUser(payload);
   }
 
   @MessagePattern('findOneFollowing')
-  findOne(@Payload() id: number) {
+  findOne(@Payload() id: number): Promise<Following> {
     return this.followingService.findOne(id);
   }
 

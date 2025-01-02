@@ -11,6 +11,7 @@ import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
 import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
 import { AccessTokenStrategy } from './common/stategy/accessToken.stategy';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { FolowingModule } from './folowing/folowing.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
     ConfigModule.forRoot(), // Cấu hình .env
     ThrottlerModule.forRoot(),
     JwtModule.register({ global: true }),
+    FolowingModule,
   ],
   controllers: [AppController],
   providers: [
