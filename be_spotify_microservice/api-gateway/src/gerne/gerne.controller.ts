@@ -58,16 +58,21 @@ export class GerneController {
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
     return this.gerneService.findOne(+id);
   }
 
   @Patch(':id')
+  @Roles([RoleType.ADMIN])
+  @UseGuards(RolesGuard)
   update(@Param('id') id: string, @Body() updateGerneDto: UpdateGerneDto) {
     return this.gerneService.update(+id, updateGerneDto);
   }
 
   @Delete(':id')
+  @Roles([RoleType.ADMIN])
+  @UseGuards(RolesGuard)
   remove(@Param('id') id: string) {
     return this.gerneService.remove(+id);
   }

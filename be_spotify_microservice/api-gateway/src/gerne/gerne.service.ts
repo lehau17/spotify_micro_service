@@ -29,14 +29,26 @@ export class GerneService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} gerne`;
+    return lastValueFrom(
+      this.gerneService
+        .send('findOneGerne', id)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   update(id: number, updateGerneDto: UpdateGerneDto) {
-    return `This action updates a #${id} gerne`;
+    return lastValueFrom(
+      this.gerneService
+        .send('updateGerne', { id, ...updateGerneDto })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   remove(id: number) {
-    return `This action removes a #${id} gerne`;
+    return lastValueFrom(
+      this.gerneService
+        .send('removeGerne', id)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 }
