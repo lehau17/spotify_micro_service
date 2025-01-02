@@ -10,6 +10,12 @@ datasource db {
 model Genre {
   id         Int       @id @default(autoincrement())
   nameGenre  String    @unique @db.VarChar(255)
+  status     Status    @default(Enable)
   created_at DateTime? @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+}
+
+enum Status {
+  Enable
+  Disable
 }

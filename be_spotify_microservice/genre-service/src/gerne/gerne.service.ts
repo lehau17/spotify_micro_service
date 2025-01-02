@@ -70,6 +70,22 @@ export class GerneService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} gerne`;
+    const foundGerne = this.prismaService.genre.findFirst({
+      where: { id: id },
+    });
+    if (!foundGerne) {
+      throw new RpcException({
+        message: 'Gerne not found',
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return this.prismaService.genre.update({
+      where: {
+        id: id,
+      },
+      data: {
+        nameGenre,
+      },
+    });
   }
 }
