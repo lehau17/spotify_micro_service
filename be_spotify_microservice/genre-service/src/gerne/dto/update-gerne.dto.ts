@@ -1,6 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { CreateGerneDto } from './create-gerne.dto';
 
-export class UpdateGerneDto extends PartialType(CreateGerneDto) {
+export class UpdateGerneDto {
   id: number;
+  nameGenre: string;
 }

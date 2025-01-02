@@ -46,11 +46,27 @@ export class GerneService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} gerne`;
+    return this.prismaService.genre.findFirst(id);
   }
 
-  update(id: number, updateGerneDto: UpdateGerneDto) {
-    return `This action updates a #${id} gerne`;
+  update({ id, nameGenre }: UpdateGerneDto) {
+    const foundGerne = this.prismaService.genre.findFirst({
+      where: { id: id },
+    });
+    if (!foundGerne) {
+      throw new RpcException({
+        message: 'Gerne not found',
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return this.prismaService.genre.update({
+      where: {
+        id: id,
+      },
+      data: {
+        nameGenre,
+      },
+    });
   }
 
   remove(id: number) {
