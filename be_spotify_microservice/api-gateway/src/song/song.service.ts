@@ -1,11 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
+import { handleRetryWithBackoff } from 'src/common/utils/handlerTimeoutWithBackoff';
 
 @Injectable()
 export class SongService {
+  constructor(
+    @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
+  ) {}
   create(createSongDto: CreateSongDto) {
-    return 'This action adds a new song';
+    return lastValueFrom(
+      this.songService
+        .send('createSong', createSongDto)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   findAll() {
