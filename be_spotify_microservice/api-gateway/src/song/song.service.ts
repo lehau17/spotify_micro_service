@@ -36,11 +36,19 @@ export class SongService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} song`;
+    return lastValueFrom(
+      this.songService
+        .send('findOneSong', id)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   update(id: number, updateSongDto: UpdateSongDto) {
-    return `This action updates a #${id} song`;
+    return lastValueFrom(
+      this.songService
+        .send('updateSong', { ...updateSongDto, id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   remove(id: number, user_id: number) {
