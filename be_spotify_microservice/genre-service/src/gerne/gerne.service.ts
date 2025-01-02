@@ -4,7 +4,7 @@ import { UpdateGerneDto } from './dto/update-gerne.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RpcException } from '@nestjs/microservices';
 import { PagingDto } from 'src/common/paging/paging.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, Status } from '@prisma/client';
 
 @Injectable()
 export class GerneService {
@@ -33,6 +33,9 @@ export class GerneService {
   findAll({ cursor, limit, page }: PagingDto) {
     const options: Prisma.GenreFindManyArgs = {
       take: limit,
+      where: {
+        status: Status.Enable,
+      },
     };
     if (cursor) {
       options.cursor = {
@@ -46,14 +49,18 @@ export class GerneService {
   }
 
   findOne(id: number) {
-    return this.prismaService.genre.findFirst(id);
+    return this.prismaService.genre.findFirst({
+      where: {
+        id,
+      },
+    });
   }
 
-  update({ id, nameGenre }: UpdateGerneDto) {
-    const foundGerne = this.prismaService.genre.findFirst({
+  async update({ id, nameGenre }: UpdateGerneDto) {
+    const foundGerne = await this.prismaService.genre.findFirst({
       where: { id: id },
     });
-    if (!foundGerne) {
+    if (!foundGerne || foundGerne.status === Status.Disable) {
       throw new RpcException({
         message: 'Gerne not found',
         statusCode: HttpStatus.NOT_FOUND,
@@ -69,11 +76,11 @@ export class GerneService {
     });
   }
 
-  remove(id: number) {
-    const foundGerne = this.prismaService.genre.findFirst({
+  async remove(id: number) {
+    const foundGerne = await this.prismaService.genre.findFirst({
       where: { id: id },
     });
-    if (!foundGerne) {
+    if (!foundGerne || foundGerne.status === Status.Disable) {
       throw new RpcException({
         message: 'Gerne not found',
         statusCode: HttpStatus.NOT_FOUND,
@@ -84,7 +91,7 @@ export class GerneService {
         id: id,
       },
       data: {
-        nameGenre,
+        status: Status.Disable,
       },
     });
   }
