@@ -35,7 +35,7 @@ export class SongController {
 
   @MessagePattern('updateSong')
   update(@Payload() updateSongDto: UpdateSongDto) {
-    return this.songService.update(updateSongDto.id, updateSongDto);
+    return this.songService.update(updateSongDto);
   }
 
   @MessagePattern('removeSong')

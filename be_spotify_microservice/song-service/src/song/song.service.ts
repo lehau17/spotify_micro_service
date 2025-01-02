@@ -34,15 +34,15 @@ export class SongService {
 
   deXuatBaiHat({ cursor, limit, page }: PagingDto) {
     const options: Prisma.SongFindManyArgs = {
-      take: limit,
+      take: +limit,
     };
     if (cursor) {
       options.cursor = {
-        id: cursor,
+        id: +cursor,
       };
       options.skip = 1;
     } else {
-      options.skip = (page - 1) * limit;
+      options.skip = (+page - 1) * +limit;
     }
     return this.prismaService.song.findMany(options);
   }
@@ -50,18 +50,18 @@ export class SongService {
   listMySong(paging: PagingDto & { user_id: number }) {
     const { cursor, limit, page, user_id } = paging;
     const options: Prisma.SongFindManyArgs = {
-      take: limit,
+      take: +limit,
       where: {
-        user_id,
+        user_id: +user_id,
       },
     };
     if (cursor) {
       options.cursor = {
-        id: cursor,
+        id: +cursor,
       };
       options.skip = 1;
     } else {
-      options.skip = (page - 1) * limit;
+      options.skip = (+page - 1) * +limit;
     }
     return this.prismaService.song.findMany(options);
   }
@@ -71,11 +71,38 @@ export class SongService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} song`;
+    return this.prismaService.song.findFirst({
+      where: { id, status: Status.Enable },
+    });
   }
 
-  update(id: number, updateSongDto: UpdateSongDto) {
-    return `This action updates a #${id} song`;
+  async update({ id, user_id, ...payload }: UpdateSongDto) {
+    // check find song
+    const foundSong = await this.prismaService.song.findFirst({
+      where: {
+        id,
+      },
+    });
+    if (!foundSong || foundSong.status === Status.Disable) {
+      throw new RpcException({
+        message: 'Song not found',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    if (foundSong.user_id !== user_id) {
+      throw new RpcException({
+        message: 'You are not owner of this song',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
+    }
+    return this.prismaService.song.update({
+      where: {
+        id,
+      },
+      data: {
+        ...payload,
+      },
+    });
   }
 
   async remove(id: number, user_id: number) {

@@ -8,6 +8,7 @@ import {
   Delete,
   Req,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SongService } from './song.service';
 import { CreateSongDto } from './dto/create-song.dto';
@@ -17,6 +18,8 @@ import { Roles } from 'src/common/demos/roles.decorator';
 import RoleType from 'src/common/types/role.type';
 import { TokenPayload } from 'src/common/types/jwt.type';
 import { PagingDto } from 'src/common/paging/paging.dto';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Public } from 'src/common/demos/public.deco';
 
 @Controller('song')
 @ApiTags('song')
@@ -26,6 +29,7 @@ export class SongController {
 
   @Post()
   @Roles([RoleType.USER, RoleType.ADMIN])
+  @UseGuards(RolesGuard)
   create(@Body() createSongDto: CreateSongDto, @Req() req: Express.Request) {
     const { id } = req.user as TokenPayload;
     return this.songService.create(createSongDto, id);
@@ -52,6 +56,7 @@ export class SongController {
     type: Number,
     description: 'Cursor for pagination',
   })
+  @Public()
   findAll(@Query() paging: PagingDto) {
     return this.songService.listDeXuatBaiHat(paging);
   }
@@ -93,6 +98,8 @@ export class SongController {
   }
 
   @Delete(':id')
+  @Roles([RoleType.USER, RoleType.ADMIN])
+  @UseGuards(RolesGuard)
   remove(@Param('id') song_id: string, @Req() req: Express.Request) {
     const { id } = req.user as TokenPayload;
     return this.songService.remove(+song_id, +id);
