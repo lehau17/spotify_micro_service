@@ -4,6 +4,7 @@ import { UpdateGerneDto } from './dto/update-gerne.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { handleRetryWithBackoff } from 'src/common/utils/handlerTimeoutWithBackoff';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Injectable()
 export class GerneService {
@@ -18,8 +19,13 @@ export class GerneService {
     );
   }
 
-  findAll() {
-    return `This action returns all gerne`;
+  findAll(paging: PagingDto) {
+    paging.fullFill();
+    return lastValueFrom(
+      this.gerneService
+        .send('findAllGerne', paging)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   findOne(id: number) {

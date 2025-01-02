@@ -32,18 +32,18 @@ export class GerneService {
 
   findAll({ cursor, limit, page }: PagingDto) {
     const options: Prisma.GenreFindManyArgs = {
-      take: limit,
+      take: +limit,
       where: {
         status: Status.Enable,
       },
     };
     if (cursor) {
       options.cursor = {
-        id: cursor,
+        id: +cursor,
       };
       options.skip = 1;
     } else {
-      options.skip = (page - 1) * limit;
+      options.skip = (+page - 1) * limit;
     }
     return this.prismaService.genre.findMany(options);
   }
