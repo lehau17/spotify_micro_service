@@ -12,6 +12,7 @@ import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard'
 import { AccessTokenStrategy } from './common/stategy/accessToken.stategy';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { FolowingModule } from './folowing/folowing.module';
+import { GerneModule } from './gerne/gerne.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FolowingModule } from './folowing/folowing.module';
     ThrottlerModule.forRoot(),
     JwtModule.register({ global: true }),
     FolowingModule,
+    GerneModule,
   ],
   controllers: [AppController],
   providers: [
