@@ -1,4 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEmpty,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 
 export class PagingDto {
   @ApiProperty({
@@ -7,6 +14,7 @@ export class PagingDto {
     default: 20,
     required: false,
   })
+  @IsEmpty()
   limit: number;
 
   @ApiProperty({
@@ -15,6 +23,7 @@ export class PagingDto {
     default: 1,
     required: false,
   })
+  @IsEmpty()
   page: number;
 
   @ApiProperty({
@@ -22,5 +31,15 @@ export class PagingDto {
     type: Number,
     required: false,
   })
+  @IsEmpty()
   cursor: number;
+
+  fullFill() {
+    if (!this.page) {
+      this.page = 1;
+    }
+    if (!this.limit) {
+      this.limit = 20;
+    }
+  }
 }

@@ -16,9 +16,9 @@ import express from 'express';
 import { TokenPayload } from 'src/common/types/jwt.type';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/paging/paging.dto';
-@ApiTags('folowing')
-@ApiBearerAuth()
-@Controller('folowing')
+@ApiTags('following')
+@ApiBearerAuth('access_token')
+@Controller('following')
 export class FolowingController {
   constructor(private readonly folowingService: FolowingService) {}
 
@@ -53,6 +53,7 @@ export class FolowingController {
     description: 'Cursor for pagination',
   })
   findAll(@Query() paging: PagingDto, @Req() req: express.Request) {
+    paging.fullFill();
     const { id } = req.user as TokenPayload;
     return this.folowingService.findAll(paging, id);
   }
