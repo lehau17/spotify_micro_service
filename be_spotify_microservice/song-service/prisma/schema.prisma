@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Song {
+  id              Int       @id @default(autoincrement())
+  user_id         Int?
+  genre_id        Int?
+  song_name       String    @db.VarChar(255)
+  viewer          Int?      @default(0)
+  duration        String?   @db.Text
+  popular         Boolean?
+  description     String?   @db.Text
+  song_image      String?   @db.VarChar(255)
+  public_date     DateTime? @db.Timestamp(6)
+  file_Path       String?   @db.VarChar(255)
+  discuss_quality Int?
+
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @updatedAt @db.Timestamp(6)
+}
+
+enum Status {
+  Enable
+  Disable
+}
