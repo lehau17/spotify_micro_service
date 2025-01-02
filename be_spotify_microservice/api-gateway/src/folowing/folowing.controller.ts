@@ -6,14 +6,18 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { FolowingService } from './folowing.service';
 import { UpdateFolowingDto } from './dto/update-folowing.dto';
 import { CreateFollowingDto } from './dto/create-folowing.dto';
 import express from 'express';
 import { TokenPayload } from 'src/common/types/jwt.type';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { PagingDto } from 'src/common/paging/paging.dto';
+@ApiTags('folowing')
+@ApiBearerAuth()
 @Controller('folowing')
 export class FolowingController {
   constructor(private readonly folowingService: FolowingService) {}
@@ -28,8 +32,29 @@ export class FolowingController {
   }
 
   @Get()
-  findAll() {
-    return this.folowingService.findAll();
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limit for pagination',
+    example: 20,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'cursor',
+    required: false,
+    type: Number,
+    description: 'Cursor for pagination',
+  })
+  findAll(@Query() paging: PagingDto, @Req() req: express.Request) {
+    const { id } = req.user as TokenPayload;
+    return this.folowingService.findAll(paging, id);
   }
 
   @Get(':id')
@@ -46,7 +71,8 @@ export class FolowingController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.folowingService.remove(+id);
+  remove(@Param('id') following_id: string, @Req() req: Express.Request) {
+    const { id } = req.user as TokenPayload;
+    return this.folowingService.remove(+following_id, id);
   }
 }

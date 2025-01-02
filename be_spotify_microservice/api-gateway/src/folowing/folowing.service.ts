@@ -41,7 +41,11 @@ export class FolowingService {
   }
 
   update(id: number, updateFolowingDto: UpdateFolowingDto) {
-    return `This action updates a #${id} folowing`;
+    return lastValueFrom(
+      this.followService
+        .send('removeFollowing', { id, updateFolowingDto })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   remove(id: number, user_id: number) {
