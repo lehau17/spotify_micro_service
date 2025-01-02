@@ -8,14 +8,13 @@ import { UpdateSongDto } from './dto/update-song.dto';
 export class SongController {
   constructor(private readonly songService: SongService) {}
 
-  @MessagePattern('createSong')
-  create(@Payload() createSongDto: CreateSongDto) {
-    return this.songService.create(createSongDto);
-  }
-
   @MessagePattern('findAllSong')
   findAll() {
     return this.songService.findAll();
+  }
+  @MessagePattern('taoBaiHat')
+  create(@Payload() createSongDto: CreateSongDto) {
+    return this.songService.create(createSongDto);
   }
 
   @MessagePattern('findOneSong')

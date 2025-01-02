@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { SongService } from './song.service';
 import { CreateSongDto } from './dto/create-song.dto';
@@ -13,6 +14,7 @@ import { UpdateSongDto } from './dto/update-song.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/demos/roles.decorator';
 import RoleType from 'src/common/types/role.type';
+import { TokenPayload } from 'src/common/types/jwt.type';
 
 @Controller('song')
 @ApiTags('song')
@@ -22,7 +24,8 @@ export class SongController {
 
   @Post()
   @Roles([RoleType.USER, RoleType.ADMIN])
-  create(@Body() createSongDto: CreateSongDto) {
+  create(@Body() createSongDto: CreateSongDto, @Req() req: Express.Request) {
+    const { id } = req.user as TokenPayload;
     return this.songService.create(createSongDto);
   }
 

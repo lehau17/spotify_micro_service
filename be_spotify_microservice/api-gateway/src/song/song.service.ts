@@ -10,10 +10,10 @@ export class SongService {
   constructor(
     @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
   ) {}
-  create(createSongDto: CreateSongDto) {
+  create(createSongDto: CreateSongDto, id: number) {
     return lastValueFrom(
       this.songService
-        .send('createSong', createSongDto)
+        .send('taoBaiHat', { ...createSongDto, user_id: id })
         .pipe(handleRetryWithBackoff(3, 1000)),
     );
   }

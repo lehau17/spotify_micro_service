@@ -13,9 +13,9 @@ async function bootstrap() {
         ],
         queue: 'gerne_queue',
         queueOptions: {
-          durable: true,
+          durable: false,
         },
-        persistent: false,
+        persistent: true,
       },
     },
   );

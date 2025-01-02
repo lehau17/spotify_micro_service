@@ -19,7 +19,7 @@ export class GerneController {
     return this.gerneService.findAll(paging);
   }
 
-  @MessagePattern('findOneGerne')
+  @MessagePattern('findOneGenre')
   findOne(@Payload() id: number) {
     return this.gerneService.findOne(id);
   }
