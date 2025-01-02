@@ -55,6 +55,17 @@ export class UpdateController {
     return result;
   }
 
+  @Post('uploadS3')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFileUsingS3(@UploadedFile() file: Express.Multer.File) {
+    const fileData = {
+      ...file,
+      buffer: file.buffer.toString('base64'), // Encode buffer to base64
+    };
+
+    return this.updateService.uploadUsingS3(fileData);
+  }
+
   @Get()
   findAll() {
     return this.updateService.findAll();

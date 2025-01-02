@@ -21,6 +21,14 @@ export class UpdateService {
     return value;
   }
 
+  uploadUsingS3(file: any) {
+    return lastValueFrom(
+      this.uploadService
+        .send('uploadFileS3', file)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
+  }
+
   findAll() {
     return `This action returns all update`;
   }

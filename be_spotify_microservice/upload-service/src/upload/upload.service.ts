@@ -1,9 +1,7 @@
 import { Injectable, Inject, HttpStatus } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
-import { uploadDiskStorage } from 'src/config/multer.config';
 import * as fs from 'fs';
-import slugify from 'slugify';
 import { RpcException } from '@nestjs/microservices';
 @Injectable()
 export class UploadService {
@@ -21,7 +19,7 @@ export class UploadService {
       }
       fs.writeFileSync(filePath, Buffer.from(file.buffer.data, 'base64'));
       const isSuccess = await this.cloudService.uploader.upload(filePath, {
-        resource_type: 'video', // Xác định loại tệp là video (dùng cho MP3)
+        resource_type: 'video',
       });
       if (!isSuccess) {
         throw new RpcException({
