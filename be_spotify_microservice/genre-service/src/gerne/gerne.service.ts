@@ -3,6 +3,8 @@ import { CreateGerneDto } from './dto/create-gerne.dto';
 import { UpdateGerneDto } from './dto/update-gerne.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RpcException } from '@nestjs/microservices';
+import { PagingDto } from 'src/common/paging/paging.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class GerneService {
@@ -28,8 +30,19 @@ export class GerneService {
     });
   }
 
-  findAll() {
-    return `This action returns all gerne`;
+  findAll({ cursor, limit, page }: PagingDto) {
+    const options: Prisma.GenreFindManyArgs = {
+      take: limit,
+    };
+    if (cursor) {
+      options.cursor = {
+        id: cursor,
+      };
+      options.skip = 1;
+    } else {
+      options.skip = (page - 1) * limit;
+    }
+    return this.prismaService.genre.findMany(options);
   }
 
   findOne(id: number) {
