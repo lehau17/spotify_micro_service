@@ -57,6 +57,20 @@ export class UpdateController {
 
   @Post('uploadS3')
   @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload photo file' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'MP3 file upload',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   async uploadFileUsingS3(@UploadedFile() file: Express.Multer.File) {
     const fileData = {
       ...file,
