@@ -1,11 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { lastValueFrom } from 'rxjs';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { GenreDto } from 'src/common/dto/gerne.dto';
 
 @Injectable()
 export class SongService {
-  create(createSongDto: CreateSongDto) {
-    return 'This action adds a new song';
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject('GERNE_SERVICE') private readonly genreService: ClientProxy,
+  ) {}
+  async create(createSongDto: CreateSongDto) {
+    //check gerne
+    const genre = await lastValueFrom<GenreDto>(
+      this.genreService.send('findOneGenre', createSongDto.genre_id).pipe(),
+    );
+    if (!genre || genre.status === 'Disable') {
+      throw new RpcException({
+        message: 'Genre not found',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    return this.prismaService.song.create({
+      data: {
+        ...createSongDto,
+      },
+    });
   }
 
   findAll() {
