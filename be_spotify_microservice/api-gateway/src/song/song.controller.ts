@@ -53,7 +53,7 @@ export class SongController {
     description: 'Cursor for pagination',
   })
   findAll(@Query() paging: PagingDto) {
-    return this.songService.findAll(paging);
+    return this.songService.listDeXuatBaiHat(paging);
   }
 
   @Get('my-song')
@@ -93,7 +93,8 @@ export class SongController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.songService.remove(+id);
+  remove(@Param('id') song_id: string, @Req() req: Express.Request) {
+    const { id } = req.user as TokenPayload;
+    return this.songService.remove(+song_id, +id);
   }
 }

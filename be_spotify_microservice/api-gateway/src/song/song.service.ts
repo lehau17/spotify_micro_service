@@ -19,7 +19,7 @@ export class SongService {
     );
   }
 
-  findAll(paging: PagingDto) {
+  listDeXuatBaiHat(paging: PagingDto) {
     return lastValueFrom(
       this.songService
         .send('listDeXuatBaiHat', paging)
@@ -43,7 +43,11 @@ export class SongService {
     return `This action updates a #${id} song`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} song`;
+  remove(id: number, user_id: number) {
+    return lastValueFrom(
+      this.songService
+        .send('removeSong', { id, user_id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 }

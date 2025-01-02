@@ -39,7 +39,7 @@ export class SongController {
   }
 
   @MessagePattern('removeSong')
-  remove(@Payload() id: number) {
-    return this.songService.remove(id);
+  remove(@Payload() { id, user_id }: { id: number; user_id: number }) {
+    return this.songService.remove(id, user_id);
   }
 }

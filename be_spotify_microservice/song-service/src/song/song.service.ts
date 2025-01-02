@@ -6,7 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { GenreDto } from 'src/common/dto/gerne.dto';
 import { PagingDto } from 'src/common/paging/paging.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, Status } from '@prisma/client';
 
 @Injectable()
 export class SongService {
@@ -78,7 +78,32 @@ export class SongService {
     return `This action updates a #${id} song`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} song`;
+  async remove(id: number, user_id: number) {
+    // check song
+    const foundSong = await this.prismaService.song.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!foundSong || foundSong.status === Status.Disable) {
+      throw new RpcException({
+        message: 'Song not found',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    if (foundSong.user_id !== user_id) {
+      throw new RpcException({
+        message: 'You are not owner of this song',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
+    }
+    return this.prismaService.song.update({
+      where: {
+        id,
+      },
+      data: {
+        status: Status.Disable,
+      },
+    });
   }
 }
