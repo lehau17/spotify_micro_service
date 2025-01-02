@@ -3,6 +3,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { GerneService } from './gerne.service';
 import { CreateGerneDto } from './dto/create-gerne.dto';
 import { UpdateGerneDto } from './dto/update-gerne.dto';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Controller()
 export class GerneController {
@@ -14,8 +15,8 @@ export class GerneController {
   }
 
   @MessagePattern('findAllGerne')
-  findAll() {
-    return this.gerneService.findAll();
+  findAll(@Payload() paging: PagingDto) {
+    return this.gerneService.findAll(paging);
   }
 
   @MessagePattern('findOneGerne')
@@ -25,7 +26,7 @@ export class GerneController {
 
   @MessagePattern('updateGerne')
   update(@Payload() updateGerneDto: UpdateGerneDto) {
-    return this.gerneService.update(updateGerneDto.id, updateGerneDto);
+    return this.gerneService.update(updateGerneDto);
   }
 
   @MessagePattern('removeGerne')
