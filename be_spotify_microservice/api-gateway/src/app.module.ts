@@ -16,6 +16,7 @@ import { GerneModule } from './gerne/gerne.module';
 import { UpdateModule } from './update/update.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { SongModule } from './song/song.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     FolowingModule,
     GerneModule,
     UpdateModule,
+    SongModule,
   ],
   controllers: [AppController],
   providers: [

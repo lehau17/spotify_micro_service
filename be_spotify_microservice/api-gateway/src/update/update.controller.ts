@@ -8,7 +8,6 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  BadRequestException,
 } from '@nestjs/common';
 import { UpdateService } from './update.service';
 import { CreateUpdateDto } from './dto/create-update.dto';
