@@ -1,3 +1,4 @@
+import { PagingDto } from './../../../genre-service/src/common/paging/paging.dto';
 import { Controller, Inject } from '@nestjs/common';
 import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 import { SongService } from './song.service';
@@ -20,6 +21,16 @@ export class SongController {
   @MessagePattern('findOneSong')
   findOne(@Payload() id: number) {
     return this.songService.findOne(id);
+  }
+
+  @MessagePattern('listDeXuatBaiHat')
+  listDeXuatBaiHat(@Payload() paging: PagingDto) {
+    return this.songService.deXuatBaiHat(paging);
+  }
+
+  @MessagePattern('listMySong')
+  listMySong(@Payload() paging: PagingDto & { user_id: number }) {
+    return this.songService.listMySong(paging);
   }
 
   @MessagePattern('updateSong')

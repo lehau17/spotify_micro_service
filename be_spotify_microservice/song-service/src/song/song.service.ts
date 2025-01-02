@@ -5,6 +5,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { lastValueFrom } from 'rxjs';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { GenreDto } from 'src/common/dto/gerne.dto';
+import { PagingDto } from 'src/common/paging/paging.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class SongService {
@@ -28,6 +30,40 @@ export class SongService {
         ...createSongDto,
       },
     });
+  }
+
+  deXuatBaiHat({ cursor, limit, page }: PagingDto) {
+    const options: Prisma.SongFindManyArgs = {
+      take: limit,
+    };
+    if (cursor) {
+      options.cursor = {
+        id: cursor,
+      };
+      options.skip = 1;
+    } else {
+      options.skip = (page - 1) * limit;
+    }
+    return this.prismaService.song.findMany(options);
+  }
+
+  listMySong(paging: PagingDto & { user_id: number }) {
+    const { cursor, limit, page, user_id } = paging;
+    const options: Prisma.SongFindManyArgs = {
+      take: limit,
+      where: {
+        user_id,
+      },
+    };
+    if (cursor) {
+      options.cursor = {
+        id: cursor,
+      };
+      options.skip = 1;
+    } else {
+      options.skip = (page - 1) * limit;
+    }
+    return this.prismaService.song.findMany(options);
   }
 
   findAll() {

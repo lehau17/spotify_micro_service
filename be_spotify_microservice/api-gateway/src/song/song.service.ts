@@ -4,6 +4,7 @@ import { UpdateSongDto } from './dto/update-song.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { handleRetryWithBackoff } from 'src/common/utils/handlerTimeoutWithBackoff';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Injectable()
 export class SongService {
@@ -18,8 +19,20 @@ export class SongService {
     );
   }
 
-  findAll() {
-    return `This action returns all song`;
+  findAll(paging: PagingDto) {
+    return lastValueFrom(
+      this.songService
+        .send('listDeXuatBaiHat', paging)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
+  }
+
+  listMySong(paging: PagingDto, user_id: number) {
+    return lastValueFrom(
+      this.songService
+        .send('listMySong', { ...paging, user_id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   findOne(id: number) {
