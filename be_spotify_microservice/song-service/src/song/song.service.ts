@@ -6,7 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { GenreDto } from 'src/common/dto/gerne.dto';
 import { PagingDto } from 'src/common/paging/paging.dto';
-import { Prisma, Status } from '@prisma/client';
+import { Prisma, Song, Status } from '@prisma/client';
 
 @Injectable()
 export class SongService {
@@ -76,7 +76,7 @@ export class SongService {
     });
   }
 
-  async update({ id, user_id, ...payload }: UpdateSongDto) {
+  async update({ id, user_id, ...payload }: UpdateSongDto): Promise<Song> {
     // check find song
     const foundSong = await this.prismaService.song.findFirst({
       where: {
