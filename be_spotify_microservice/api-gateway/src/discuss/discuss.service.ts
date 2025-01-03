@@ -4,6 +4,7 @@ import { UpdateDiscussDto } from './dto/update-discuss.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { handleRetryWithBackoff } from 'src/common/utils/handlerTimeoutWithBackoff';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Injectable()
 export class DiscussService {
@@ -18,8 +19,13 @@ export class DiscussService {
     );
   }
 
-  findAll() {
-    return `This action returns all discuss`;
+  findListDiscussBySong(paging: PagingDto, song_id: number) {
+    console.log('paging', paging, song_id);
+    return lastValueFrom(
+      this.discussService
+        .send('findListDiscussBySong', { ...paging, song_id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   findOne(id: number) {

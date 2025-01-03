@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmpty, IsOptional } from 'class-validator';
+import { IsEmpty, IsInt, IsOptional } from 'class-validator';
 
 export class PagingDto {
   // @ApiProperty({

@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Req,
+  Query,
 } from '@nestjs/common';
 import { DiscussService } from './discuss.service';
 import { CreateDiscussDto } from './dto/create-discuss.dto';
 import { UpdateDiscussDto } from './dto/update-discuss.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { TokenPayload } from 'src/common/types/jwt.type';
+import { Public } from 'src/common/demos/public.deco';
+import { PagingDto } from 'src/common/paging/paging.dto';
 @ApiTags('discuss')
 @ApiBearerAuth('access_token')
 @Controller('discuss')
@@ -28,9 +31,31 @@ export class DiscussController {
     return this.discussService.create(createDiscussDto, id);
   }
 
-  @Get()
-  findAll() {
-    return this.discussService.findAll();
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limit for pagination',
+    example: 20,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'cursor',
+    required: false,
+    type: Number,
+    description: 'Cursor for pagination',
+  })
+  @Get('list-by-song/:id')
+  @Public()
+  findAll(@Query() paging: PagingDto, @Param('id') song_id: string) {
+    paging.fullFill();
+    return this.discussService.findListDiscussBySong(paging, +song_id);
   }
 
   @Get(':id')

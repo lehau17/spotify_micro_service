@@ -53,8 +53,8 @@ export class DiscussService {
     });
   }
 
-  findListCommentBySongId(song_id: number, paging: PagingDto) {
-    const { cursor, limit, page } = paging;
+  findListCommentBySongId(paging: PagingDto & { song_id: number }) {
+    const { cursor, limit, page, song_id } = paging;
     const options: Prisma.DiscussFindManyArgs = {
       take: +limit,
       where: {
@@ -69,6 +69,7 @@ export class DiscussService {
     } else {
       options.skip = (+page - 1) * +limit;
     }
+    console.log('check options', options);
     return this.prismaService.discuss.findMany(options);
   }
 
