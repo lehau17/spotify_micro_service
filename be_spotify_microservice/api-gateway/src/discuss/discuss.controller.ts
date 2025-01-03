@@ -50,7 +50,8 @@ export class DiscussController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.discussService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: Express.Request) {
+    const { id: user_id } = req.user as TokenPayload;
+    return this.discussService.remove(+id, user_id);
   }
 }

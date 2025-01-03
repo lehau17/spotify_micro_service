@@ -38,7 +38,11 @@ export class DiscussService {
     );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} discuss`;
+  remove(id: number, user_id: number) {
+    return lastValueFrom(
+      this.discussService
+        .send('removeDiscuss', { id, user_id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 }
