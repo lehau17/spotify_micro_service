@@ -1,14 +1,12 @@
-import { ExecutionContext, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
-import Redis from 'ioredis';
+
 import { RedisThrottlerStorageService } from './RedisThrottlerStorage/throttler-redis.service';
-import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
-import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
+
 import { AccessTokenStrategy } from './common/stategy/accessToken.stategy';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { FolowingModule } from './folowing/folowing.module';
@@ -18,7 +16,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SongModule } from './song/song.module';
 import { DiscussModule } from './discuss/discuss.module';
-import { RecentSongNoSpecModule } from './recent-song--no-spec/recent-song--no-spec.module';
+import { RecentSongModule } from './recent-song/recent-song.module';
 
 @Module({
   imports: [
@@ -36,7 +34,7 @@ import { RecentSongNoSpecModule } from './recent-song--no-spec/recent-song--no-s
     UpdateModule,
     SongModule,
     DiscussModule,
-    RecentSongNoSpecModule,
+    RecentSongModule,
   ],
   controllers: [AppController],
   providers: [
