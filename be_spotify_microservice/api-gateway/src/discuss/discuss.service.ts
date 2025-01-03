@@ -30,8 +30,12 @@ export class DiscussService {
     );
   }
 
-  update(id: number, updateDiscussDto: UpdateDiscussDto) {
-    return `This action updates a #${id} discuss`;
+  update(id: number, updateDiscussDto: UpdateDiscussDto, user_id: number) {
+    return lastValueFrom(
+      this.discussService
+        .send('updateDiscuss', { ...updateDiscussDto, id, user_id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   remove(id: number) {

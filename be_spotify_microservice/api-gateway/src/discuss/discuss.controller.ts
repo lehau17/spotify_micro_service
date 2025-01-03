@@ -39,8 +39,14 @@ export class DiscussController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDiscussDto: UpdateDiscussDto) {
-    return this.discussService.update(+id, updateDiscussDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateDiscussDto: UpdateDiscussDto,
+    @Req() req: Express.Request,
+  ) {
+    const { id: user_id } = req.user as TokenPayload;
+
+    return this.discussService.update(+id, updateDiscussDto, user_id);
   }
 
   @Delete(':id')

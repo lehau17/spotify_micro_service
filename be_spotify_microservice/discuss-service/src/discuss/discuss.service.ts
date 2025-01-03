@@ -72,10 +72,6 @@ export class DiscussService {
     return this.prismaService.discuss.findMany(options);
   }
 
-  findAll() {
-    return `This action returns all discuss`;
-  }
-
   findOne(id: number) {
     return this.prismaService.discuss.findFirst({
       where: {
@@ -84,8 +80,33 @@ export class DiscussService {
     });
   }
 
-  update(id: number, updateDiscussDto: UpdateDiscussDto) {
-    return `This action updates a #${id} discuss`;
+  async update({ content, id, user_id }: UpdateDiscussDto) {
+    // check exist
+    const foundDiscuss = await this.prismaService.discuss.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    if (!foundDiscuss) {
+      throw new RpcException({
+        message: 'Discuss not found',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    if (foundDiscuss.user_id !== user_id) {
+      throw new RpcException({
+        message: 'User not permission',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
+    }
+    return this.prismaService.discuss.update({
+      where: {
+        id: id,
+      },
+      data: {
+        content: content,
+      },
+    });
   }
 
   async remove(id: number, user_id: number) {

@@ -20,7 +20,7 @@ export class DiscussController {
 
   @MessagePattern('updateDiscuss')
   update(@Payload() updateDiscussDto: UpdateDiscussDto) {
-    return this.discussService.update(updateDiscussDto.id, updateDiscussDto);
+    return this.discussService.update(updateDiscussDto);
   }
 
   @MessagePattern('removeDiscuss')

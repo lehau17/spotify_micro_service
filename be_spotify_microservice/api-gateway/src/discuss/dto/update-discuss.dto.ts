@@ -1,4 +1,11 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateDiscussDto } from './create-discuss.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
-export class UpdateDiscussDto extends PartialType(CreateDiscussDto) {}
+export class UpdateDiscussDto {
+  @ApiProperty({
+    description: 'Nội dung của bình luận',
+    example: 'This is a comment.',
+  })
+  @IsString()
+  content: string;
+}
