@@ -31,7 +31,6 @@ export class RecentSongController {
     return this.recentSongService.create(createRecentSongDto, id);
   }
 
-  @Get()
   @ApiQuery({
     name: 'limit',
     required: false,

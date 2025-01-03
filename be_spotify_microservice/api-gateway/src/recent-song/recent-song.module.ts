@@ -10,12 +10,14 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'RECENT_SONG_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: [
+            process.env.RABBITMQ_URL || 'amqp://admin:1234@localhost:5672',
+          ],
           queue: 'recent_song_queue',
           queueOptions: {
-            durable: false,
+            durable: true,
           },
-          persistent: true,
+          persistent: false,
         },
       },
     ]),
