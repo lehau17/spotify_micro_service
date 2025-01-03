@@ -18,6 +18,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SongModule } from './song/song.module';
 import { DiscussModule } from './discuss/discuss.module';
+import { RecentSongNoSpecModule } from './recent-song--no-spec/recent-song--no-spec.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { DiscussModule } from './discuss/discuss.module';
     UpdateModule,
     SongModule,
     DiscussModule,
+    RecentSongNoSpecModule,
   ],
   controllers: [AppController],
   providers: [
