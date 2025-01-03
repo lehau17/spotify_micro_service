@@ -10,10 +10,10 @@ export class DiscussService {
   constructor(
     @Inject('DISCUSS_SERVICE') private readonly discussService: ClientProxy,
   ) {}
-  create(createDiscussDto: CreateDiscussDto) {
+  create(createDiscussDto: CreateDiscussDto, user_id: number) {
     return lastValueFrom(
       this.discussService
-        .send('createDiscuss', createDiscussDto)
+        .send('createDiscuss', { ...createDiscussDto, user_id })
         .pipe(handleRetryWithBackoff(3, 1000)),
     );
   }
@@ -23,7 +23,11 @@ export class DiscussService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} discuss`;
+    return lastValueFrom(
+      this.discussService
+        .send('findOneDiscuss', id)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
   }
 
   update(id: number, updateDiscussDto: UpdateDiscussDto) {

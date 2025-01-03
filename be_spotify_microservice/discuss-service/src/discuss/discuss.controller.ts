@@ -13,11 +13,6 @@ export class DiscussController {
     return this.discussService.create(createDiscussDto);
   }
 
-  @MessagePattern('findAllDiscuss')
-  findAll() {
-    return this.discussService.findAll();
-  }
-
   @MessagePattern('findOneDiscuss')
   findOne(@Payload() id: number) {
     return this.discussService.findOne(id);
