@@ -12,7 +12,7 @@ import {
 import { RecentSongService } from './recent-song.service';
 import { CreateRecentSongDto } from './dto/create-recent-song.dto';
 import { UpdateRecentSongDto } from './dto/update-recent-song.dto';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { TokenPayload } from 'src/common/types/jwt.type';
 import { PagingDto } from 'src/common/paging/paging.dto';
 
@@ -31,6 +31,27 @@ export class RecentSongController {
     return this.recentSongService.create(createRecentSongDto, id);
   }
 
+  @Get()
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limit for pagination',
+    example: 20,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'cursor',
+    required: false,
+    type: Number,
+    description: 'Cursor for pagination',
+  })
   @Get('me')
   findAll(@Query() paging: PagingDto, @Req() req: Express.Request) {
     const { id } = req.user as TokenPayload;
