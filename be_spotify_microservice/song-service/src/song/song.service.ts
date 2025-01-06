@@ -32,6 +32,28 @@ export class SongService {
     });
   }
 
+  async getListSong(ids: number[]) {
+    return this.prismaService.song.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+  }
+
+  async checkSongsExist(songIds: number[]): Promise<boolean> {
+    const listSongs = await this.prismaService.song.findMany({
+      where: {
+        id: {
+          in: songIds,
+        },
+        status: 'Enable',
+      },
+    });
+    return listSongs.length === songIds.length;
+  }
+
   deXuatBaiHat({ cursor, limit, page }: PagingDto) {
     const options: Prisma.SongFindManyArgs = {
       take: +limit,

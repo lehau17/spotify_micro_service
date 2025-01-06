@@ -13,6 +13,17 @@ export class SongController {
   findAll() {
     return this.songService.findAll();
   }
+
+  @MessagePattern('checkListSongs')
+  checkListSong(@Payload() payload: number[]) {
+    return this.songService.checkSongsExist(payload);
+  }
+
+  @MessagePattern('getListSong')
+  getListSong(@Payload() payload: number[]) {
+    return this.songService.getListSong(payload);
+  }
+
   @MessagePattern('taoBaiHat')
   create(@Payload() createSongDto: CreateSongDto) {
     return this.songService.create(createSongDto);

@@ -1,8 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PlaylistService } from './playlist.service';
-import { CreatePlaylistDto } from './dto/create-playlist.dto';
+import { CreatePlaylistDto, SongDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Controller()
 export class PlaylistController {
@@ -14,8 +15,8 @@ export class PlaylistController {
   }
 
   @MessagePattern('findAllPlaylist')
-  findAll() {
-    return this.playlistService.findAll();
+  findAll(@Payload() paging: PagingDto & { user_id: number }) {
+    return this.playlistService.findAll(paging);
   }
 
   @MessagePattern('findOnePlaylist')
@@ -23,13 +24,27 @@ export class PlaylistController {
     return this.playlistService.findOne(id);
   }
 
-  @MessagePattern('updatePlaylist')
-  update(@Payload() updatePlaylistDto: UpdatePlaylistDto) {
-    return this.playlistService.update(updatePlaylistDto.id, updatePlaylistDto);
+  @MessagePattern('addSongToPlaylist')
+  addSong(
+    @Payload() payload: { song_ids: number[]; id: number; user_id: number },
+  ) {
+    return this.playlistService.addSongToPlaylist(payload);
+  }
+
+  @MessagePattern('removeSongToPlaylist')
+  removeSong(
+    @Payload()
+    payload: {
+      song_id: number;
+      playlist_id: number;
+      user_id: number;
+    },
+  ) {
+    return this.playlistService.removeASongOutPlayList(payload);
   }
 
   @MessagePattern('removePlaylist')
-  remove(@Payload() id: number) {
-    return this.playlistService.remove(id);
+  remove(@Payload() { user_id, id }: { user_id: number; id: number }) {
+    return this.playlistService.remove(id, user_id);
   }
 }

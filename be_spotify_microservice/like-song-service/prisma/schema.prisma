@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model LikedSong {
+  id         Int      @id @default(autoincrement())
+  song_id    Int
+  user_id    Json     @db.JsonB
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([song_id])
+}

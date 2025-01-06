@@ -13,9 +13,11 @@ model playlists {
   image_path    String? @db.VarChar(255)
   playlist_name String? @db.VarChar(255)
   description   String? @db.Text
+  songs         Json    @db.JsonB
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @updatedAt @db.Timestamp(6)
 
   @@index([user_id])
+  @@index([songs], type: Gin)
 }

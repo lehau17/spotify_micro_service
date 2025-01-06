@@ -17,6 +17,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { SongModule } from './song/song.module';
 import { DiscussModule } from './discuss/discuss.module';
 import { RecentSongModule } from './recent-song/recent-song.module';
+import { PlaylistModule } from './playlist/playlist.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { RecentSongModule } from './recent-song/recent-song.module';
     SongModule,
     DiscussModule,
     RecentSongModule,
+    PlaylistModule,
   ],
   controllers: [AppController],
   providers: [
