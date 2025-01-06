@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SongService } from './song.service';
 import { SongController } from './song.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CacheService } from 'src/cache/cache.service';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
   ],
   controllers: [SongController],
-  providers: [SongService],
+  providers: [SongService, CacheService],
 })
 export class SongModule {}
