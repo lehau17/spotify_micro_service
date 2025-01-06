@@ -55,9 +55,11 @@ export class LikeSongService {
       },
       take: +limit,
       skip: cursor ? 1 : (+page - 1) * limit,
-      cursor: {
-        id: cursor ? cursor : undefined,
-      },
+      cursor: cursor
+        ? {
+            id: cursor ? cursor : undefined,
+          }
+        : undefined,
     };
     const foundListLikedSong =
       await this.prismaService.likedSong.findMany(options);

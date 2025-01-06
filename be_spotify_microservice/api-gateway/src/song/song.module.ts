@@ -18,6 +18,18 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           persistent: false,
         },
       },
+      {
+        name: 'LIKESONG_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://admin:1234@localhost:5672'],
+          queue: 'like_song_queue',
+          queueOptions: {
+            durable: true,
+          },
+          persistent: false,
+        },
+      },
     ]),
   ],
   controllers: [SongController],

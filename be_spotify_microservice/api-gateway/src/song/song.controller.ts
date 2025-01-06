@@ -92,6 +92,32 @@ export class SongController {
     return this.songService.findOne(+id);
   }
 
+  @Get(':id/list-like')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limit for pagination',
+    example: 20,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'cursor',
+    required: false,
+    type: Number,
+    description: 'Cursor for pagination',
+  })
+  @Public()
+  listLike(@Param('id') id: string, @Query() paging: PagingDto) {
+    return this.songService.listLike(+id, paging);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSongDto: UpdateSongDto) {
     return this.songService.update(+id, updateSongDto);

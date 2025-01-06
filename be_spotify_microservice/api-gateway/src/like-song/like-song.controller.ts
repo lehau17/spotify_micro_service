@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   Req,
+  Query,
 } from '@nestjs/common';
 import { LikeSongService } from './like-song.service';
 import { CreateLikeSongDto } from './dto/create-like-song.dto';
 import { UpdateLikeSongDto } from './dto/update-like-song.dto';
 import { TokenPayload } from 'src/common/types/jwt.type';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Controller('like-song')
 @ApiTags('like-song')
@@ -30,7 +32,7 @@ export class LikeSongController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query() paging: PagingDto) {
     return this.likeSongService.findAll();
   }
 
@@ -39,16 +41,9 @@ export class LikeSongController {
     return this.likeSongService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateLikeSongDto: UpdateLikeSongDto,
-  ) {
-    return this.likeSongService.update(+id, updateLikeSongDto);
-  }
-
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.likeSongService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: Express.Request) {
+    const { id: user_id } = req.user as TokenPayload;
+    return this.likeSongService.remove({ id: +id, user_id });
   }
 }

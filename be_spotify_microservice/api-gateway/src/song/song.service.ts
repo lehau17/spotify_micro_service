@@ -10,11 +10,20 @@ import { PagingDto } from 'src/common/paging/paging.dto';
 export class SongService {
   constructor(
     @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
+    @Inject('LIKESONG_SERVICE') private readonly likeSongService: ClientProxy,
   ) {}
   create(createSongDto: CreateSongDto, id: number) {
     return lastValueFrom(
       this.songService
         .send('taoBaiHat', { ...createSongDto, user_id: id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
+  }
+
+  listLike(song_id: number, paging: PagingDto) {
+    return lastValueFrom(
+      this.likeSongService
+        .send('findAllLikeSong', { ...paging, song_id })
         .pipe(handleRetryWithBackoff(3, 1000)),
     );
   }
