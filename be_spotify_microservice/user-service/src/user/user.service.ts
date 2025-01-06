@@ -50,6 +50,8 @@ export class UserService {
     const token = await this.generateToken({
       id: foundUser.id,
       role: [foundUser.role.name],
+      name: foundUser.name,
+      url: foundUser.avatar,
     });
     if (token && token.refreshToken) {
       await this.prismaService.users.update({
@@ -113,7 +115,12 @@ export class UserService {
         message: 'Có lỗi xảy ra khi tạo user',
         statusCode: 500,
       });
-    const token = await this.generateToken({ id: newUser.id, role: ['USER'] });
+    const token = await this.generateToken({
+      id: newUser.id,
+      role: ['USER'],
+      name: newUser.name || '',
+      url: newUser.avatar || '',
+    });
     return {
       info_user: newUser,
       token,

@@ -18,6 +18,7 @@ import { SongModule } from './song/song.module';
 import { DiscussModule } from './discuss/discuss.module';
 import { RecentSongModule } from './recent-song/recent-song.module';
 import { PlaylistModule } from './playlist/playlist.module';
+import { LikeSongModule } from './like-song/like-song.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { PlaylistModule } from './playlist/playlist.module';
     DiscussModule,
     RecentSongModule,
     PlaylistModule,
+    LikeSongModule,
   ],
   controllers: [AppController],
   providers: [
