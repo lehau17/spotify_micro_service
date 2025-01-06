@@ -4,10 +4,15 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { handleRetryWithBackoff } from 'src/common/utils/handlerTimeoutWithBackoff';
 import { RegisterDto } from './dto/register.dto';
+import { MailService } from 'src/mail/mail.service';
+import { RegisterResponseDto } from './dto/register.response.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(@Inject('USER_SERVICE') private userService: ClientProxy) {}
+  constructor(
+    @Inject('USER_SERVICE') private userService: ClientProxy,
+    private readonly mailService: MailService,
+  ) {}
   async login(payload: LoginDto) {
     return lastValueFrom(
       this.userService
@@ -17,10 +22,16 @@ export class AuthService {
   }
 
   async register(payload: RegisterDto) {
-    return lastValueFrom(
+    const result = await lastValueFrom<RegisterResponseDto>(
       this.userService
         .send('register', payload)
         .pipe(handleRetryWithBackoff(3, 2000)),
     );
+    this.mailService.sendMailRegisterAccountSuccess([result.info_user.name], {
+      name: result.info_user.account,
+      actionUrl: 'http://localhost',
+      year: 2024,
+    });
+    return result;
   }
 }
