@@ -3,6 +3,7 @@ import { LikeSongService } from './like-song.service';
 import { LikeSongController } from './like-song.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CacheService } from 'src/cache/cache.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
   ],
   controllers: [LikeSongController],
-  providers: [LikeSongService, PrismaService],
+  providers: [LikeSongService, PrismaService, CacheService],
 })
 export class LikeSongModule {}
