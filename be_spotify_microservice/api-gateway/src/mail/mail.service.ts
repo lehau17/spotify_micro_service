@@ -14,4 +14,13 @@ export class MailService {
       template: './welcome.hbs',
     });
   }
+
+  sendMailVerifyAccountSuccess(to: string[], context: Record<string, any>) {
+    this.mailService.emit('sendMail', {
+      to,
+      context,
+      subject: 'Verify Accout Spotify',
+      template: './verify-email.hbs',
+    });
+  }
 }

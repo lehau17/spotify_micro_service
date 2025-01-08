@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Query } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,9 +10,9 @@ import { RegisterDto } from './dto/register-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @MessagePattern('createUser')
-  create(@Payload() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @MessagePattern('verifyAccount')
+  verifyAccount(@Payload() token: string) {
+    return this.userService.verifyAccount(token);
   }
 
   @MessagePattern('login')
@@ -25,23 +25,30 @@ export class UserController {
     return this.userService.register(Payload);
   }
 
-  @MessagePattern('findAllUser')
-  findAll() {
-    return this.userService.findAll();
+  @MessagePattern('checkAcceptchangePassword')
+  checkAcceptchangePassword(
+    @Payload() payload: { token: string; user_id: number },
+  ) {
+    return this.userService.checkAcceptchangePassword(payload);
   }
 
-  @MessagePattern('findOneUser')
-  findOne(@Payload() id: number) {
-    return this.userService.findOne(id);
-  }
+  // @MessagePattern('findAllUser')
+  // findAll() {
+  //   return this.userService.findAll();
+  // }
 
-  @MessagePattern('updateUser')
-  update(@Payload() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto.id, updateUserDto);
-  }
+  // @MessagePattern('findOneUser')
+  // findOne(@Payload() id: number) {
+  //   return this.userService.findOne(id);
+  // }
 
-  @MessagePattern('removeUser')
-  remove(@Payload() id: number) {
-    return this.userService.remove(id);
-  }
+  // @MessagePattern('updateUser')
+  // update(@Payload() updateUserDto: UpdateUserDto) {
+  //   return this.userService.update(updateUserDto.id, updateUserDto);
+  // }
+
+  // @MessagePattern('removeUser')
+  // remove(@Payload() id: number) {
+  //   return this.userService.remove(id);
+  // }
 }

@@ -13,6 +13,15 @@ export class AuthService {
     @Inject('USER_SERVICE') private userService: ClientProxy,
     private readonly mailService: MailService,
   ) {}
+
+  async verifyToken(token: string) {
+    return lastValueFrom(
+      this.userService
+        .send('verifyAccount', token)
+        .pipe(handleRetryWithBackoff(3, 2000)),
+    );
+  }
+
   async login(payload: LoginDto) {
     return lastValueFrom(
       this.userService
@@ -27,11 +36,14 @@ export class AuthService {
         .send('register', payload)
         .pipe(handleRetryWithBackoff(3, 2000)),
     );
-    this.mailService.sendMailRegisterAccountSuccess([result.info_user.name], {
-      name: result.info_user.account,
-      actionUrl: 'http://localhost',
-      year: 2024,
-    });
+    this.mailService.sendMailRegisterAccountSuccess(
+      [result.info_user.account],
+      {
+        name: result.info_user.account,
+        actionUrl: 'http://localhost',
+        year: 2024,
+      },
+    );
     return result;
   }
 }
