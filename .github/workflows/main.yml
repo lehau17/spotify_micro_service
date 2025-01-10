@@ -98,21 +98,21 @@ jobs:
 
 
             # playlist-service
-            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./like-song-service/.env
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL_PLAYLIST_SERVICE }}" >> ./like-song-service/.env
-            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./like-song-service/.env
-            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./like-song-service/.env
-            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./like-song-service/.env
-            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./like-song-service/.env
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./playlist-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_PLAYLIST_SERVICE }}" >> ./playlist-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./playlist-service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./playlist-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./playlist-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./playlist-service/.env
 
 
             # recentSong-service
-            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./like-song-service/.env
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL_RECENTSONG_SERVICE }}" >> ./like-song-service/.env
-            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./like-song-service/.env
-            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./like-song-service/.env
-            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./like-song-service/.env
-            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./like-song-service/.env
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./recentSong-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_RECENTSONG_SERVICE }}" >> ./recentSong-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./recentSong-service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./recentSong-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./recentSong-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./recentSong-service/.env
 
             # song-service
             echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./song-service/.env
