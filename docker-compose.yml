@@ -46,7 +46,7 @@ services:
       - node-network
   playlist-service:
     container_name: playlist-service
-    build: ./be_spotify_microservice/playlist-service
+    build: ./be_spotify_microservice/playlist_service
     networks:
       - node-network
   recentSong-service:
