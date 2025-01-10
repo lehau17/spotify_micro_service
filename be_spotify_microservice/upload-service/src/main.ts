@@ -8,9 +8,7 @@ async function bootstrap() {
     {
       transport: Transport.RMQ,
       options: {
-        urls: [
-          `amqp://${process.env.RABBITMQ_USER || 'admin'}:${process.env.RABBITMQ_PASSWORD || '1234'}@${process.env.RABBITMQ_HOST || 'localhost'}:5672`,
-        ],
+        urls: [process.env.RABBITMQ_URL],
         queue: 'upload_queue',
         queueOptions: {
           durable: true,
