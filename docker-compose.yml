@@ -49,8 +49,8 @@ services:
     build: ./be_spotify_microservice/playlist_service
     networks:
       - node-network
-  recentSong-service:
-    container_name: recentSong-service
+  recent-song-service:
+    container_name: recent-song-service
     build: ./be_spotify_microservice/recentSong-service
     networks:
       - node-network
