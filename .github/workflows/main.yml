@@ -97,13 +97,13 @@ jobs:
 
 
 
-            # playlist-service
-            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./playlist-service/.env
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL_PLAYLIST_SERVICE }}" >> ./playlist-service/.env
-            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./playlist-service/.env
-            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./playlist-service/.env
-            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./playlist-service/.env
-            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./playlist-service/.env
+            # playlist_service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./playlist_service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_PLAYLIST_SERVICE }}" >> ./playlist_service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./playlist_service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./playlist_service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./playlist_service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./playlist_service/.env
 
 
             # recentSong-service
