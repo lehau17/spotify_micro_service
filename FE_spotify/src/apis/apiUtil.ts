@@ -1,6 +1,6 @@
 import { LoginResponseType } from "@/types/ver2/auth.type";
 import SuccessResponse from "@/types/ver2/response.type";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const api = axios.create({
@@ -34,12 +34,14 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  (error: AxiosError) => {
     // Handle 401 error
+    console.log("check errior", error);
     if (error.response?.status === 401) {
-      // localStorage.removeItem("user");
-      // localStorage.removeItem("access_token");
-      // localStorage.removeItem("refresh_token");
+      console.log("chuyển về login");
+      localStorage.removeItem("user");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
       const navigate = useNavigate(); // Initialize navigate
       navigate("/login"); // Redirect to login page
     }

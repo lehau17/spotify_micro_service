@@ -6,69 +6,69 @@ services:
       - 3000:3000
     networks:
       - node-network
-    depends_on:
-      - rabbitmq
-      - redis
-    environment:
-      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
-      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-      - RATE_LIMIT_GLOBAL=${RATE_LIMIT_GLOBAL}
-      - RATE_LIMIT_PUBLIC=${RATE_LIMIT_PUBLIC}
-      - RATE_LIMIT_TTL=${RATE_LIMIT_TTL}
-      - RATE_LIMIT_PRIVATE=${RATE_LIMIT_PRIVATE}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_HOST=${REDIS_HOST}
+    # depends_on:
+    #   - rabbitmq
+    #   - redis
+    # environment:
+    #   - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+    #   - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+    #   - RATE_LIMIT_GLOBAL=${RATE_LIMIT_GLOBAL}
+    #   - RATE_LIMIT_PUBLIC=${RATE_LIMIT_PUBLIC}
+    #   - RATE_LIMIT_TTL=${RATE_LIMIT_TTL}
+    #   - RATE_LIMIT_PRIVATE=${RATE_LIMIT_PRIVATE}
+    #   - REDIS_PORT=${REDIS_PORT}
+    #   - REDIS_HOST=${REDIS_HOST}
 
   user-service:
     container_name: user-service
     build: ./be_spotify_microservice/user-service
     networks:
       - node-network
-    depends_on:
-      - postgres
-    environment:
-      - DATABASE_URL=${DATABASE_URL_USER_SERVICE}
-      - ACCESS_TOKEN_KEY=${JWT_ACCESS_SECRET}
-      - REFRESH_TOKEN_KEY=${JWT_REFRESH_SECRET}
+    # depends_on:
+    #   - postgres
+    # environment:
+    #   - DATABASE_URL=${DATABASE_URL_USER_SERVICE}
+    #   - ACCESS_TOKEN_KEY=${JWT_ACCESS_SECRET}
+    #   - REFRESH_TOKEN_KEY=${JWT_REFRESH_SECRET}
 
-  rabbitmq:
-    container_name: some-rabbit
-    image: rabbitmq:3-management
-    environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: 1234
-    ports:
-      - 5672:5672
-      - 15672:15672
-    networks:
-      - node-network
+  # rabbitmq:
+  #   container_name: some-rabbit
+  #   image: rabbitmq:3-management
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: admin
+  #     RABBITMQ_DEFAULT_PASS: 1234
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   networks:
+  #     - node-network
 
-  redis:
-    container_name: some-redis
-    image: redis:latest
-    environment:
-      REDIS_PASSWORD: 1234 # Mật khẩu cho Redis
-    ports:
-      - 6379:6379
-    networks:
-      - node-network
-    command: ["redis-server", "--requirepass", "1234"]
-    volumes:
-      - redis-data:/data
+  # redis:
+  #   container_name: some-redis
+  #   image: redis:latest
+  #   environment:
+  #     REDIS_PASSWORD: 1234 # Mật khẩu cho Redis
+  #   ports:
+  #     - 6379:6379
+  #   networks:
+  #     - node-network
+  #   command: ["redis-server", "--requirepass", "1234"]
+  #   volumes:
+  #     - redis-data:/data
 
-  postgres:
-    container_name: some-postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-    ports:
-      - 5432:5432
-    networks:
-      - node-network
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./volumes/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+  # postgres:
+  #   container_name: some-postgres
+  #   image: postgres:latest
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: 1234
+  #   ports:
+  #     - 5432:5432
+  #   networks:
+  #     - node-network
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #     - ./volumes/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 networks:
   node-network:

@@ -14,12 +14,36 @@ import { CacheService } from 'src/cache/cache.service';
         name: 'MAIL_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: [process.env.RABBITMQ_URL],
           queue: 'mail_queue',
           queueOptions: {
             durable: true,
           },
           persistent: true,
+        },
+      },
+      {
+        name: 'SONG_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL],
+          queue: 'song_queue',
+          queueOptions: {
+            durable: true,
+          },
+          persistent: false,
+        },
+      },
+      {
+        name: 'FOLLOWING_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL],
+          queue: 'following_queue',
+          queueOptions: {
+            durable: true,
+          },
+          persistent: false,
         },
       },
     ]),

@@ -10,9 +10,9 @@ export class RedisThrottlerStorageService implements ThrottlerStorage {
   private logger: Logger;
   constructor() {
     this.redis = new Redis({
-      host: 'localhost', // Thay bằng cấu hình Redis của bạn
-      port: 6379,
-      password: '',
+      host: process.env.REDIS_HOST, // Thay bằng cấu hình Redis của bạn
+      port: Number(process.env.REDIS_PORT),
+      password: process.env.REDIS_PASSWORD,
       db: 0,
     });
 

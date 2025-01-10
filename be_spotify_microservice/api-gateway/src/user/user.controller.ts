@@ -1,8 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/paging/paging.dto';
 import { Public } from 'src/common/demos/public.deco';
+import { TokenPayload } from 'src/common/types/jwt.type';
 
 @Controller('user')
 @ApiTags('user')
@@ -34,5 +35,12 @@ export class UserController {
   @Public()
   getSinger(@Query() paging: PagingDto) {
     return this.userService.getSinglers(paging);
+  }
+
+  @Get(':id/singer-detail')
+  getSingerDetail(@Param('id') id: string, @Req() req: Express.Request) {
+    const { id: user_id } = req.user as TokenPayload;
+    // console.log('check id: ' + id);
+    return this.userService.getSingerDetail(+id, user_id);
   }
 }

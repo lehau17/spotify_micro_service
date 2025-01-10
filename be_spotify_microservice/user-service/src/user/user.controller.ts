@@ -48,6 +48,10 @@ export class UserController {
     return this.userService.getSingers(paging);
   }
 
+  @MessagePattern('getSingerDetail')
+  getSingerDetail(@Payload() { id, user_id }: { id: number; user_id: number }) {
+    return this.userService.getSingerDetail(id, user_id);
+  }
   // @MessagePattern('findAllUser')
   // findAll() {
   //   return this.userService.findAll();

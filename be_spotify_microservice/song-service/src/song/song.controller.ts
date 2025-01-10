@@ -1,9 +1,9 @@
-import { PagingDto } from './../../../genre-service/src/common/paging/paging.dto';
 import { Controller, Inject } from '@nestjs/common';
-import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { SongService } from './song.service';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Controller()
 export class SongController {
@@ -22,6 +22,11 @@ export class SongController {
   @MessagePattern('getListSong')
   getListSong(@Payload() payload: number[]) {
     return this.songService.getListSong(payload);
+  }
+
+  @EventPattern('incView')
+  incView(@Payload() payload: number) {
+    return this.songService.increaseViewInRedis(payload);
   }
 
   @MessagePattern('listPopularSong')
@@ -52,6 +57,11 @@ export class SongController {
   @MessagePattern('updateSong')
   update(@Payload() updateSongDto: UpdateSongDto) {
     return this.songService.update(updateSongDto);
+  }
+
+  @MessagePattern('listSongByUser')
+  listSongByUser(@Payload() id: number) {
+    return this.songService.listSongByUser(id);
   }
 
   @MessagePattern('removeSong')

@@ -26,6 +26,8 @@ export class PublicThrottlerGuard extends ThrottlerGuard {
     this.redis = new Redis({
       port: this.configService.get<number>('REDIS_PORT'),
       host: this.configService.get<string>('REDIS_HOST'),
+      db: 0,
+      password: this.configService.get<string>('REDIS_PASSWORD'),
     });
     this.limit = this.configService.get<number>('RATE_LIMIT_PUBLIC');
     this.apis = apis;

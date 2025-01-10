@@ -1,8 +1,13 @@
-import { HttpCode, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { StatusUser, users } from '@prisma/client';
+import { StatusUser } from '@prisma/client';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { TokenPayload } from 'src/common/jwt/access_token.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -13,6 +18,12 @@ import { RegisterResponseDto } from './dto/response/register.response.dto';
 import Redis from 'ioredis';
 import { CacheService } from 'src/cache/cache.service';
 import { PagingDto } from './common/paging/paging.dto';
+import { last, lastValueFrom } from 'rxjs';
+import {
+  DetailSingerResponseDto,
+  SongDto,
+} from './dto/response/singer-detail.dto.response';
+import { Following } from './dto/response/follow.dtp.response';
 @Injectable()
 export class UserService {
   private redis: Redis;
@@ -21,6 +32,8 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     @Inject('MAIL_SERVICE') private readonly mailService: ClientProxy,
+    @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
+    @Inject('FOLLOWING_SERVICE') private readonly followerService: ClientProxy,
   ) {
     this.redis = CacheService.getClient();
   }
@@ -36,6 +49,48 @@ export class UserService {
         role: true,
       },
     });
+  }
+
+  /**
+   * @description only role
+   */
+  async getSingerDetail(
+    id: number,
+    user_id: number,
+  ): Promise<DetailSingerResponseDto> {
+    const foundSinger = await this.prismaService.users.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        role: true,
+      },
+    });
+    if (!foundSinger || foundSinger.role.name !== 'SINGER') {
+      throw new RpcException({
+        message: 'User not singer',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    const [listSongByUser, checkFollower] = await Promise.all([
+      await lastValueFrom<SongDto[]>(
+        this.songService.send('listSongByUser', id),
+      ),
+      await lastValueFrom<Following>(
+        this.followerService.send('getFollower', {
+          user_id,
+          follower_user_id: foundSinger.id,
+        }),
+      ),
+    ]);
+    const isFollow = Boolean(checkFollower);
+    //
+    return {
+      ...foundSinger,
+      songs: listSongByUser,
+      isFollow,
+    };
+    //check if friend
   }
 
   async login({ username, password }: LoginDto): Promise<LoginResponse> {
