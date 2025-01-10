@@ -39,6 +39,14 @@ const useRoutesElements = () => {
           path: "genre/:id",
           element: <GenreAndSong />,
         },
+        {
+          path: "artist/:id",
+          element: (
+            <>
+              <DetailArtists />
+            </>
+          ),
+        },
       ],
     },
     {

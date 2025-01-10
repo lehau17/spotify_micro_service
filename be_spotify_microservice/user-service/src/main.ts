@@ -8,12 +8,12 @@ async function bootstrap() {
     {
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://admin:1234@localhost:5672'],
+        urls: [process.env.RABBITMQ_URL],
         queue: 'user_queue',
         queueOptions: {
           durable: true,
         },
-        persistent: false,  
+        persistent: false,
       },
     },
   );

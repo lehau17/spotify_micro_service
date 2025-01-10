@@ -55,4 +55,12 @@ export class FolowingService {
         .pipe(handleRetryWithBackoff(3, 1000)),
     );
   }
+
+  toggerFollower(user_id: number, following_user_id: number) {
+    return lastValueFrom(
+      this.followService
+        .send('toggerFollower', { following_user_id, user_id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
+  }
 }

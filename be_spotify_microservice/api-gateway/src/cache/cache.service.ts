@@ -8,8 +8,9 @@ export class CacheService implements OnModuleInit {
   onModuleInit() {
     this.logger = new Logger(CacheService.name);
     this.redis = new Redis({
-      host: 'localhost',
-      port: 6379,
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_HOST),
+      password: process.env.REDIS_PASSWORD,
       db: 0,
     });
     this.logger.fatal('init cache service');

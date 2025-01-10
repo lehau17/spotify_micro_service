@@ -118,6 +118,12 @@ export class SongController {
     return this.songService.findOne(+id);
   }
 
+  @Patch('/:id/inc-view')
+  @Public()
+  incView(@Param('id') id: string) {
+    return this.songService.incView(+id);
+  }
+
   @Get(':id/list-like')
   @ApiQuery({
     name: 'limit',

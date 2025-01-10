@@ -11,7 +11,7 @@ import { CacheService } from 'src/cache/cache.service';
         name: 'GERNE_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:1234@localhost:5672'],
+          urls: [process.env.RABBITMQ_URL],
           queue: 'gerne_queue',
           queueOptions: {
             durable: false,

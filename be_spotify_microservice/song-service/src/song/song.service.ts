@@ -9,6 +9,7 @@ import { PagingDto } from 'src/common/paging/paging.dto';
 import { Prisma, Song, Status } from '@prisma/client';
 import { CacheService } from 'src/cache/cache.service';
 import Redis from 'ioredis';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class SongService {
@@ -21,6 +22,81 @@ export class SongService {
     this.redis = CacheService.getClient();
     this.logger = new Logger(SongService.name);
   }
+
+  /**
+   * @description increase view in redis cache
+   * @param createSongDto
+   * @task CRONJOB
+   */
+  @Cron('*/10 * * * * *') // Every 10 seconds
+  async increaseViewCRON() {
+    this.logger.debug('Processing views from Redis 10 secend');
+    const batchSize = 1000;
+    let cursor = '0';
+
+    do {
+      // SCAN keys with a pattern
+      const [nextCursor, keys] = await this.redis.scan(
+        cursor,
+        'MATCH',
+        'view:*',
+        'COUNT',
+        batchSize,
+      );
+      cursor = nextCursor;
+
+      if (keys.length > 0) {
+        this.logger.debug(`Processing ${keys.length} keys...`);
+
+        // Fetch values for the keys
+        const values = await this.redis.mget(keys);
+
+        // Prepare data for database updates
+        const updates = keys.map((key, index) => ({
+          id: key.split(':')[1], // Extract the ID from the key
+          view: parseInt(values[index], 10),
+        }));
+
+        // Update the database
+        for (const update of updates) {
+          if (update.view) {
+            await this.prismaService.song.update({
+              where: { id: +update.id },
+              data: { viewer: { increment: update.view } },
+            });
+          }
+        }
+
+        // Remove processed keys from Redis
+        await this.redis.del(...keys);
+      } else {
+        this.logger.debug('No view selected');
+      }
+    } while (cursor !== '0');
+
+    this.logger.debug('Finished processing views from Redis');
+  }
+
+  /**
+   * @description chuyển trạng thái của song thành phổ biến
+   * @script SQL
+   */
+  @Cron('*/10 * * * * *') // Every 10 seconds
+  async changePopularSong() {
+    await this.prismaService.$executeRaw`WITH top_songs AS (
+                SELECT id
+                FROM "Song"
+                WHERE viewer != 0
+                ORDER BY viewer DESC
+                LIMIT 100
+              )
+              UPDATE "Song"
+              SET popular = TRUE
+              WHERE id IN (SELECT id FROM top_songs);`;
+
+    this.logger.debug('Finished processing popular from Redis');
+  }
+
   async create(createSongDto: CreateSongDto) {
     //check gerne
     const genre = await lastValueFrom<GenreDto>(
@@ -39,6 +115,16 @@ export class SongService {
     });
   }
 
+  async increaseViewInRedis(id: number): Promise<void> {
+    const key = `view:${id}`;
+    // INCR will create the key with a value of 1 if it does not already exist
+    const value = await this.redis.get(key);
+    if (!value || value.length === 0) {
+      await this.redis.setex(key, 12, 1);
+    }
+    await this.redis.incr(key);
+  }
+
   async getListSong(ids: number[]): Promise<Record<number, Song>> {
     // get database
     const foundSongs = await this.prismaService.song.findMany({
@@ -53,6 +139,17 @@ export class SongService {
       result[Number(s.id)] = s;
     });
     return result;
+  }
+
+  async listSongByUser(id: number): Promise<Song[]> {
+    const options: Prisma.SongFindManyArgs = {
+      where: {
+        status: 'Enable',
+        user_id: id,
+      },
+      orderBy: [{ viewer: 'desc' }],
+    };
+    return this.prismaService.song.findMany(options);
   }
 
   async listPopularSong({

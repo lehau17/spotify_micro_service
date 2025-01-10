@@ -7,10 +7,12 @@ import { PrismaService } from './prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from './cache/cache.module';
 import { CacheService } from './cache/cache.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     SongModule,
+    ScheduleModule.forRoot(),
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
     CacheModule,

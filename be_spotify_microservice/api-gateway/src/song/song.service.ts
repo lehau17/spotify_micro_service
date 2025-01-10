@@ -28,6 +28,11 @@ export class SongService {
     );
   }
 
+  incView(id: number) {
+    console.log("")
+    this.songService.emit('incView', id).pipe(handleRetryWithBackoff(3, 1000));
+  }
+
   listDeXuatBaiHat(paging: PagingDto) {
     return lastValueFrom(
       this.songService

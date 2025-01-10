@@ -71,6 +71,40 @@ export class FollowingService {
     });
   }
 
+  getFollower(user_id: number, follower_user_id: number): Promise<Following> {
+    return this.prismaService.following.findFirst({
+      where: { user_id, following_user_id: follower_user_id },
+    });
+  }
+
+  async toggerFollower(user_id: number, follower_user_id: number) {
+    let foundFollower = await this.prismaService.following.findFirst({
+      where: { user_id, following_user_id: follower_user_id },
+    });
+    if (!foundFollower) {
+      foundFollower = await this.prismaService.following.create({
+        data: { user_id, following_user_id: follower_user_id },
+      });
+    } else {
+      if (foundFollower.status === 'Enable') {
+        await this.prismaService.following.update({
+          where: { id: foundFollower.id },
+          data: {
+            status: 'Disable',
+          },
+        });
+      } else {
+        await this.prismaService.following.update({
+          where: { id: foundFollower.id },
+          data: {
+            status: 'Enable',
+          },
+        });
+      }
+    }
+    return foundFollower;
+  }
+
   update(id: number, updateFollowingDto: UpdateFollowingDto) {
     return `This action updates a #${id} following`;
   }

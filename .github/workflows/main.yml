@@ -25,9 +25,9 @@ jobs:
                 mkdir -p /root/docker
             fi
 
-            rm -rf /root/docker
-            mkdir -p /root/docker
-            cd /root/docker
+            # rm -rf /root/docker
+            # mkdir -p /root/docker
+            # cd /root/docker
 
             if [ ! -d ".git" ]; then
                 echo "Repo chưa được clone. Tiến hành clone..."
@@ -39,16 +39,45 @@ jobs:
 
             cd ./spotify_micro_service
 
+            cd ./be_spotify_microservice
+
+            echo "JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}" >> ./api-gateway/.env
+            echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> ./api-gateway/.env
+            echo "RATE_LIMIT_GLOBAL=${{ secrets.RATE_LIMIT_GLOBAL }}" >> ./api-gateway/.env
+            echo "RATE_LIMIT_PUBLIC=${{ secrets.RATE_LIMIT_PUBLIC }}" >> ./api-gateway/.env
+            echo "RATE_LIMIT_TTL=${{ secrets.RATE_LIMIT_TTL }}" >> ./api-gateway/.env
+            echo "RATE_LIMIT_PRIVATE=${{ secrets.RATE_LIMIT_PRIVATE }}" >> ./api-gateway/.env
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./api-gateway/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./api-gateway/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./api-gateway/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./api-gateway/.env
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./api-gateway/.env
+
+
+
+
+            # user service
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_USER_SERVICE }}" >> ./user-service/.env
+            echo "ACCESS_TOKEN_KEY=${{ secrets.JWT_ACCESS_SECRET }}" >> ./user-service/.env
+            echo "REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_SECRET }}" >> ./user-service/.env
+            echo "URL_BACKEND=${{ secrets.URL_BACKEND }}" >> ./user-service/.env
+            echo "VERIFY_TOKEN_KEY=${{ secrets.VERIFY_TOKEN_KEY }}" >> ./user-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./user-service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./user-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./user-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./user-service/.env
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./user-service/.env
+
             # Write secrets to the .env file, ensuring proper handling
-            printf "JWT_ACCESS_SECRET=\"%s\"\n" "${{ secrets.JWT_ACCESS_SECRET }}" > .env
-            printf "JWT_REFRESH_SECRET=\"%s\"\n" "${{ secrets.JWT_REFRESH_SECRET }}" >> .env
-            printf "RATE_LIMIT_GLOBAL=\"%s\"\n" "${{ secrets.RATE_LIMIT_GLOBAL }}" >> .env
-            printf "RATE_LIMIT_PUBLIC=\"%s\"\n" "${{ secrets.RATE_LIMIT_PUBLIC }}" >> .env
-            printf "RATE_LIMIT_TTL=\"%s\"\n" "${{ secrets.RATE_LIMIT_TTL }}" >> .env
-            printf "RATE_LIMIT_PRIVATE=\"%s\"\n" "${{ secrets.RATE_LIMIT_PRIVATE }}" >> .env
-            printf "REDIS_PORT=\"%s\"\n" "${{ secrets.REDIS_PORT }}" >> .env
-            printf "REDIS_HOST=\"%s\"\n" "${{ secrets.REDIS_HOST }}" >> .env
-            printf "DATABASE_URL_USER_SERVICE=\"%s\"\n" "${{ secrets.DATABASE_URL_USER_SERVICE }}" >> .env
+            # printf "JWT_ACCESS_SECRET=\"%s\"\n" "${{ secrets.JWT_ACCESS_SECRET }}" > .env
+            # printf "JWT_REFRESH_SECRET=\"%s\"\n" "${{ secrets.JWT_REFRESH_SECRET }}" >> .env
+            # printf "RATE_LIMIT_GLOBAL=\"%s\"\n" "${{ secrets.RATE_LIMIT_GLOBAL }}" >> .env
+            # printf "RATE_LIMIT_PUBLIC=\"%s\"\n" "${{ secrets.RATE_LIMIT_PUBLIC }}" >> .env
+            # printf "RATE_LIMIT_TTL=\"%s\"\n" "${{ secrets.RATE_LIMIT_TTL }}" >> .env
+            # printf "RATE_LIMIT_PRIVATE=\"%s\"\n" "${{ secrets.RATE_LIMIT_PRIVATE }}" >> .env
+            # printf "REDIS_PORT=\"%s\"\n" "${{ secrets.REDIS_PORT }}" >> .env
+            # printf "REDIS_HOST=\"%s\"\n" "${{ secrets.REDIS_HOST }}" >> .env
+            # printf "DATABASE_URL_USER_SERVICE=\"%s\"\n" "${{ secrets.DATABASE_URL_USER_SERVICE }}" >> .env
 
             # Docker commands
             echo "Dừng các container đang chạy..."

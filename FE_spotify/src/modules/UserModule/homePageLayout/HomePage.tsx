@@ -7,10 +7,13 @@ import { UserResponseDto } from "@/types/ver2/auth.type";
 import { useGetRecentSongQuery } from "@/query/recent_song";
 import { RecentSongResponse } from "@/types/ver2/recent-song.type";
 import Loading from "@/components/ui/loading";
+import { SongDto } from "@/types/ver2/song.response";
+import { useGetSongPopularQuery } from "@/query/song";
 
 export default function HomePage() {
   const [user, setUser] = useState<UserResponseDto[]>([]);
   const [recentSong, setRecentSong] = useState<RecentSongResponse[]>([]);
+  const [popularSong, setPopularSong] = useState<SongDto[]>([]);
   const isAuth = !!localStorage.getItem("access_token");
   const { data, isLoading, isError } = useGetSingerQuery({
     page: 1,
@@ -19,6 +22,13 @@ export default function HomePage() {
 
   const { data: dataRecentSong, isLoading: isLoadingRecentSong } =
     useGetRecentSongQuery({
+      page: 1,
+      limit: 50,
+      cursor: undefined,
+    });
+
+  const { data: dataPopularSong, isLoading: isLoadingPopularSong } =
+    useGetSongPopularQuery({
       page: 1,
       limit: 50,
       cursor: undefined,
@@ -35,6 +45,12 @@ export default function HomePage() {
       setRecentSong(dataRecentSong.data.data);
     }
   }, [dataRecentSong]);
+
+  useEffect(() => {
+    if (dataPopularSong) {
+      setPopularSong(dataPopularSong.data.data);
+    }
+  }, [dataPopularSong]);
 
   const renderArtists = (data: any[]) => {
     if (data.length > 0) {
@@ -95,6 +111,33 @@ export default function HomePage() {
     return <div className="p-5">Bạn chưa nghe bài hát nào nhỉ ?</div>; // Return a message if no artists
   };
 
+  const renderPopularSong = (data: SongDto[]) => {
+    if (data.length > 0) {
+      return data.map((song, index: number) => {
+        if (index > 6) return;
+        return (
+          <Link className="" key={song.id} to={``}>
+            <Card
+              className="items-artists"
+              hoverable
+              style={{ width: 200 }}
+              cover={
+                <img
+                  className="img-artists"
+                  alt="example"
+                  src={song.song_image}
+                />
+              }
+            >
+              <h1 className="text-white font-bold text-xl">{song.song_name}</h1>
+            </Card>
+          </Link>
+        );
+      });
+    }
+    return <div className="p-5">Bạn chưa nghe bài hát nào nhỉ ?</div>; // Return a message if no artists
+  };
+
   if (isError) {
     return <div>Error occurred while fetching data.</div>; // Show error state
   }
@@ -122,7 +165,7 @@ export default function HomePage() {
         <Link to="">Xem tất cả</Link>
       </div>
       <div className="artists">
-        {isLoading ? <Loading /> : renderArtists(user)}
+        {isLoading ? <Loading /> : renderPopularSong(popularSong)}
       </div>
     </section>
   );

@@ -15,6 +15,7 @@ export class AuthController {
   @Post('login')
   @Public()
   login(@Body() payload: LoginDto) {
+    console.log('check ', process.env.RABBITMQ_URL);
     return this.authService.login(payload);
   }
 

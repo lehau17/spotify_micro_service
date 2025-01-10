@@ -16,6 +16,7 @@ import express from 'express';
 import { TokenPayload } from 'src/common/types/jwt.type';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/paging/paging.dto';
+import { ToggerFollower } from './dto/togge.dto';
 @ApiTags('following')
 @ApiBearerAuth('access_token')
 @Controller('following')
@@ -76,4 +77,12 @@ export class FolowingController {
     const { id } = req.user as TokenPayload;
     return this.folowingService.remove(+following_id, id);
   }
+
+  @Post('toogle')
+  toogleFollow(@Body() payload: ToggerFollower, @Req() req: Express.Request) {
+    const { id } = req.user as TokenPayload;
+    return this.folowingService.toggerFollower(id, payload.following_user_id);
+  }
+
+  toggerFollower;
 }

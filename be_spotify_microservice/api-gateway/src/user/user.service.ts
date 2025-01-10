@@ -19,4 +19,12 @@ export class UserService {
         .pipe(handleRetryWithBackoff(3, 1000)),
     );
   }
+
+  async getSingerDetail(id: number, user_id: number) {
+    return lastValueFrom(
+      this.userService
+        .send('getSingerDetail', { id, user_id })
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
+  }
 }
