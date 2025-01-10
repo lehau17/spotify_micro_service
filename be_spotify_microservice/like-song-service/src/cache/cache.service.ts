@@ -13,7 +13,9 @@ export class CacheService implements OnModuleInit {
     CacheService.redis = new Redis({
       host: this.configService.get<string>('REDIS_HOST') || 'localhost',
       port: this.configService.get<number>('REDIS_PORT') || 6379,
+
       db: 0,
+      password: this.configService.get<string>('REDIS_PASSWORD'),
     });
     this.logger.fatal('init cache service');
   }

@@ -2,21 +2,29 @@ import { Module } from '@nestjs/common';
 import { PlaylistService } from './playlist.service';
 import { PlaylistController } from './playlist.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule, ConfigService } from '@nestjs/config'; // Import ConfigService
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ConfigModule,
+    ClientsModule.registerAsync([
       {
         name: 'SONG_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [process.env.RABBITMQ_URL],
-          queue: 'song_queue',
-          queueOptions: {
-            durable: true,
+        inject: [ConfigService], // Inject ConfigService
+        useFactory: async (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [
+              configService.get<string>('RABBITMQ_URL') ||
+                'amqp://admin:1234@localhost:5672',
+            ],
+            queue: 'song_queue',
+            queueOptions: {
+              durable: true,
+            },
+            persistent: false,
           },
-          persistent: false,
-        },
+        }),
       },
     ]),
   ],

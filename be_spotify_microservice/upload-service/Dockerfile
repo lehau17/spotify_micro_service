@@ -27,8 +27,8 @@
 FROM node:20 AS build
 
 WORKDIR /root/user-service
-
-COPY package.json .
+RUN yarn config set network-timeout 600000
+COPY package.json yarn.lock ./
 
 RUN yarn install
 

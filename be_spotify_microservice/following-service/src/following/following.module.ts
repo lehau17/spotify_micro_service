@@ -3,23 +3,26 @@ import { FollowingService } from './following.service';
 import { FollowingController } from './following.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ConfigModule,
+    ClientsModule.registerAsync([
       {
         name: 'USER_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [
-            `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASS}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT || 5672}`,
-          ],
-          queue: 'user_queue',
-          queueOptions: {
-            durable: true,
+        useFactory: async (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('RABBITMQ_URL')],
+            queue: 'user_queue',
+            queueOptions: {
+              durable: true,
+            },
+            persistent: false,
           },
-          persistent: false,
-        },
+        }),
+        inject: [ConfigService], // Inject ConfigService here
       },
     ]),
   ],

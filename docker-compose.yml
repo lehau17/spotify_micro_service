@@ -24,6 +24,47 @@ services:
     build: ./be_spotify_microservice/user-service
     networks:
       - node-network
+  discuss-service:
+    container_name: discuss-service
+    build: ./be_spotify_microservice/discuss-service
+    networks:
+      - node-network
+  following-service:
+    container_name: following-service
+    build: ./be_spotify_microservice/following-service
+    networks:
+      - node-network
+  genre-service:
+    container_name: genre-service
+    build: ./be_spotify_microservice/genre-service
+    networks:
+      - node-network
+  like-song-service:
+    container_name: like-song-service
+    build: ./be_spotify_microservice/like-song-service
+    networks:
+      - node-network
+  playlist-service:
+    container_name: playlist-service
+    build: ./be_spotify_microservice/playlist-service
+    networks:
+      - node-network
+  recentSong-service:
+    container_name: recentSong-service
+    build: ./be_spotify_microservice/recentSong-service
+    networks:
+      - node-network
+  song-service:
+    container_name: song-service
+    build: ./be_spotify_microservice/song-service
+    networks:
+      - node-network
+
+  upload-service:
+    container_name: upload-service
+    build: ./be_spotify_microservice/upload-service
+    networks:
+      - node-network
     # depends_on:
     #   - postgres
     # environment:

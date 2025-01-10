@@ -64,7 +64,80 @@ jobs:
             echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./user-service/.env
             echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./user-service/.env
 
+
+
+            # discuss-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./discuss-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_DISCUSS_SERVICE }}" >> ./discuss-service/.env
+
+
+
+            # follow-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./following-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_FOLLOW_SERVICE }}" >> ./following-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./following-service/.following
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./following-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./following-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./following-service/.env
+
+
+            # genre-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./genre-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_GENRE_SERVICE }}" >> ./genre-service/.env
+
+
+
+            # like-song-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./like-song-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_LIKE_SONG_SERVICE }}" >> ./like-song-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./like-song-service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./like-song-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./like-song-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./like-song-service/.env
+
+
+
+            # playlist-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./like-song-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_PLAYLIST_SERVICE }}" >> ./like-song-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./like-song-service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./like-song-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./like-song-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./like-song-service/.env
+
+
+            # recentSong-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./like-song-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_RECENTSONG_SERVICE }}" >> ./like-song-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./like-song-service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./like-song-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./like-song-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./like-song-service/.env
+
+            # song-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./song-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_SONG_SERVICE }}" >> ./song-service/.env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./song-service/.env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./song-service/.env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./song-service/.env
+            echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./song-service/.env
+
+            # upload-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./upload-service/.env
+            echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> ./upload-service/.env
+            echo "AWS_S3_NAME=${{ secrets.AWS_S3_NAME }}" >> ./upload-service/.env
+            echo "AWS_S3_SECRET_KEY=${{ secrets.AWS_S3_SECRET_KEY }}" >> ./upload-service/.env
+            echo "AWS_S3_REGION=${{ secrets.AWS_S3_REGION }}" >> ./upload-service/.env
+            echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> ./upload-service/.env
+            echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> ./upload-service/.env
+            echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> ./upload-service/.env
+            echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> ./upload-service/.env
+            echo "CLOUDINARY_URL=${{ secrets.CLOUDINARY_URL }}" >> ./upload-service/.env
+
             cd ..
+
+
+
             # Docker commands
             echo "Dừng các container đang chạy..."
             docker-compose down || echo "Không có container nào đang chạy."
