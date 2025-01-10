@@ -29,17 +29,15 @@ jobs:
             cd /root/docker
 
             # Check if the repo directory exists and is not empty
-            if [ ! -d "spotify_micro_service" ] || [ ! "$(ls -A /root/docker/spotify_micro_service)" ]; then
-                echo "Repo chưa được clone. Tiến hành clone..."
-                git clone https://github.com/lehau17/spotify_micro_service.git
-            else
-                echo "Repo đã tồn tại. Pull code mới nhất..."
-                cd spotify_micro_service
-                git pull origin main
+            if [ -d "spotify_micro_service" ] && [ "$(ls -A /root/docker/spotify_micro_service)" ]; then
+                echo "Repo đã tồn tại và có nội dung. Tiến hành xoá thư mục và clone lại..."
+                rm -rf /root/docker/spotify_micro_service
             fi
 
-            cd ./spotify_micro_service
+            echo "Tiến hành clone repo mới..."
+            git clone https://github.com/lehau17/spotify_micro_service.git
 
+            cd ./spotify_micro_service
             cd ./be_spotify_microservice
 
             # Write secrets to .env files
