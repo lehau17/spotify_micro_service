@@ -1,69 +1,129 @@
-import { Card } from 'antd'
-import './homepage.css'
-import { useEffect, useState } from 'react';
-import { apiGetUser } from '../../../apis/apiGetUser';
-import { TypeUser } from '../../../types/typeUser';
-import { Link } from 'react-router-dom';
+import { Card } from "antd";
+import "./homepage.css";
+import { useEffect, useState } from "react"; // Import useEffect and useState
+import { Link } from "react-router-dom";
+import { useGetSingerQuery } from "@/query/user"; // Assuming this is your query hook
+import { UserResponseDto } from "@/types/ver2/auth.type";
+import { useGetRecentSongQuery } from "@/query/recent_song";
+import { RecentSongResponse } from "@/types/ver2/recent-song.type";
+import Loading from "@/components/ui/loading";
 
-const { Meta } = Card;
 export default function HomePage() {
-    const [user, setUser] = useState<TypeUser[]>([])
-    const callApiGetUser = async () => {
-        const result = await apiGetUser()
-        setUser(Array.isArray(result) ? result : [result])
-    }
-    useEffect(() => {
-        callApiGetUser()
-    }, [])
+  const [user, setUser] = useState<UserResponseDto[]>([]);
+  const [recentSong, setRecentSong] = useState<RecentSongResponse[]>([]);
+  const isAuth = !!localStorage.getItem("access_token");
+  const { data, isLoading, isError } = useGetSingerQuery({
+    page: 1,
+    limit: 50,
+  });
 
-    const renderArtists = () => {
-        if (user) {
-            return user.map((itemUser) => {
-                if (itemUser.role === "Singer") {
-                    return <Link key={itemUser.userId} to={`/detail-artists/${itemUser.userId}`}>
-                        <Card
-                            className='items-artists'
-                            hoverable
-                            style={{ width: 200 }}
-                            cover=
-                            {
-                                <img
-                                    className='img-artists' alt="example" src={itemUser.avatar} />
-                            }
-                        >
-                            <Meta
-                                title={itemUser.name} description={itemUser.role} />
-                        </Card>
-                    </Link>
-                }
+  const { data: dataRecentSong, isLoading: isLoadingRecentSong } =
+    useGetRecentSongQuery({
+      page: 1,
+      limit: 50,
+      cursor: undefined,
+    });
 
-            })
-        }
+  useEffect(() => {
+    if (data) {
+      setUser(data.data.data);
     }
-    return (
-        <section className='homePage'>
-            <div className='tittle pt-9 pl-5'>
-                <a className='text-xl font-bold'>Popular artists</a>
-            </div>
-            <div className='artists'>
-                {/* {renderArtists()} */}
-                <Card
-                    className='items-artists'
-                    hoverable
-                    style={{ width: 200 }}
-                    cover=
-                    {
-                        <img
-                            className='img-artists' alt="example" src='https://genk.mediacdn.vn/139269124445442048/2024/6/1/photo-1-17168606131071257137350-1717278776106716631383.jpg' />
-                    }
-                >
-                    <Meta
-                        title={'Sơn Tùng'} description={'Single '} />
-                </Card>
-            </div>
-            {/* <div className='list-friend fixed bottom-5 right-10'>
-                <ListFriend />
-            </div> */}
-        </section>
-    )
+  }, [data]);
+
+  useEffect(() => {
+    if (dataRecentSong) {
+      setRecentSong(dataRecentSong.data.data);
+    }
+  }, [dataRecentSong]);
+
+  const renderArtists = (data: any[]) => {
+    if (data.length > 0) {
+      return data.map((itemUser, index: number) => {
+        if (index > 6) return;
+        return (
+          <Link className="" key={itemUser.id} to={``}>
+            <Card
+              className="items-artists"
+              hoverable
+              style={{ width: 200 }}
+              cover={
+                <img
+                  className="img-artists"
+                  alt="example"
+                  src={itemUser.avatar}
+                />
+              }
+            >
+              <h1 className="text-white font-bold text-xl">{itemUser.name}</h1>
+              <h1 className="text-[gray]  text-[12px] my-2">
+                {itemUser.role.name}
+              </h1>
+            </Card>
+          </Link>
+        );
+      });
+    }
+    return <div>No artists found</div>; // Return a message if no artists
+  };
+
+  const renderRecentSong = (data: RecentSongResponse[]) => {
+    if (data.length > 0) {
+      return data.map((itemUser, index: number) => {
+        if (index > 6) return;
+        return (
+          <Link className="" key={itemUser.song.id} to={``}>
+            <Card
+              className="items-artists"
+              hoverable
+              style={{ width: 200 }}
+              cover={
+                <img
+                  className="img-artists"
+                  alt="example"
+                  src={itemUser.song.song_image}
+                />
+              }
+            >
+              <h1 className="text-white font-bold text-xl">
+                {itemUser.song.song_name}
+              </h1>
+            </Card>
+          </Link>
+        );
+      });
+    }
+    return <div className="p-5">Bạn chưa nghe bài hát nào nhỉ ?</div>; // Return a message if no artists
+  };
+
+  if (isError) {
+    return <div>Error occurred while fetching data.</div>; // Show error state
+  }
+
+  return (
+    <section className="homePage p-3">
+      <div className="tittle pt-9 pl-5 flex items-center justify-between">
+        <a className="text-xl font-bold">Nghệ sĩ phổ biến</a>
+        <Link to="">Xem tất cả</Link>
+      </div>
+      <div className="artists">
+        {isLoading ? <Loading /> : renderArtists(user)}
+      </div>
+      {isAuth && !isLoadingRecentSong && (
+        <>
+          <div className="tittle pt-9 pl-5 flex items-center justify-between">
+            <a className="text-xl font-bold">Mới phát gần đây</a>
+            <Link to="">Xem tất cả</Link>
+          </div>
+          <div className="artists">{renderRecentSong(recentSong)} </div>
+        </>
+      )}
+      <div className="tittle pt-9 pl-5 flex items-center justify-between">
+        <a className="text-xl font-bold">Những bản nhạc phổ biến hiện nay</a>
+        <Link to="">Xem tất cả</Link>
+      </div>
+      <div className="artists">
+        {isLoading ? <Loading /> : renderArtists(user)}
+      </div>
+    </section>
+  );
 }

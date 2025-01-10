@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register-user.dto';
+import { PagingDto } from './common/paging/paging.dto';
 
 @Controller()
 export class UserController {
@@ -30,6 +31,21 @@ export class UserController {
     @Payload() payload: { token: string; user_id: number },
   ) {
     return this.userService.checkAcceptchangePassword(payload);
+  }
+
+  @MessagePattern('changePassword')
+  changePassword(@Payload() payload: { id: number; newPassword: string }) {
+    return this.userService.changePassword(payload);
+  }
+
+  @MessagePattern('requestChangePassword')
+  requestChangePassword(@Payload() user_id: number) {
+    return this.userService.requestChangePassword(user_id);
+  }
+
+  @MessagePattern('getSingers')
+  getSingers(@Payload() paging: PagingDto) {
+    return this.userService.getSingers(paging);
   }
 
   // @MessagePattern('findAllUser')

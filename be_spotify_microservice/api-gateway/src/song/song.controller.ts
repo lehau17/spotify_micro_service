@@ -87,6 +87,32 @@ export class SongController {
     return this.songService.listMySong(paging, id);
   }
 
+  @Get('popular-song')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limit for pagination',
+    example: 20,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'cursor',
+    required: false,
+    type: Number,
+    description: 'Cursor for pagination',
+  })
+  @Public()
+  listPopularSong(@Query() paging: PagingDto, @Req() req: Express.Request) {
+    return this.songService.listPopularSong(paging);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.songService.findOne(+id);

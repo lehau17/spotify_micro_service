@@ -6,6 +6,7 @@ import { handleRetryWithBackoff } from 'src/common/utils/handlerTimeoutWithBacko
 import { RegisterDto } from './dto/register.dto';
 import { MailService } from 'src/mail/mail.service';
 import { RegisterResponseDto } from './dto/register.response.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -45,5 +46,35 @@ export class AuthService {
       },
     );
     return result;
+  }
+
+  async changePassword(payload: ChangePasswordDto, id: number) {
+    return lastValueFrom(
+      this.userService
+        .send('changePassword', { ...payload, id })
+        .pipe(handleRetryWithBackoff(3, 2000)),
+    );
+  }
+
+  async requestChangePassword(user_id: number) {
+    return lastValueFrom(
+      this.userService
+        .send('requestChangePassword', user_id)
+        .pipe(handleRetryWithBackoff(3, 2000)),
+    );
+  }
+
+  async checkAcceptchangePassword({
+    token,
+    user_id,
+  }: {
+    token: string;
+    user_id: number;
+  }) {
+    return lastValueFrom(
+      this.userService
+        .send('checkAcceptchangePassword', { token, user_id })
+        .pipe(handleRetryWithBackoff(3, 2000)),
+    );
   }
 }

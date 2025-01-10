@@ -16,7 +16,6 @@ export class SongService {
   private logger: Logger;
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly cacheService: CacheService,
     @Inject('GERNE_SERVICE') private readonly genreService: ClientProxy,
   ) {
     this.redis = CacheService.getClient();
@@ -40,15 +39,55 @@ export class SongService {
     });
   }
 
-  async getListSong(ids: number[]) {
+  async getListSong(ids: number[]): Promise<Record<number, Song>> {
     // get database
-    return this.prismaService.song.findMany({
+    const foundSongs = await this.prismaService.song.findMany({
       where: {
         id: {
           in: ids,
         },
       },
     });
+    let result: Record<number, Song> = {};
+    foundSongs.forEach((s) => {
+      result[Number(s.id)] = s;
+    });
+    return result;
+  }
+
+  async listPopularSong({
+    cursor,
+    limit = 60,
+    page = 1,
+  }: PagingDto): Promise<Song[]> {
+    // check redis
+    const key = `popularSong:${page}:${cursor}`;
+    const listSongRedis = await this.redis.get(key);
+    if (listSongRedis && listSongRedis.length > 0) {
+      return JSON.parse(listSongRedis) as Song[];
+    }
+    //
+    const options: Prisma.SongFindManyArgs = {
+      where: {
+        popular: true,
+        status: 'Enable',
+      },
+      orderBy: [{ created_at: 'desc' }, { viewer: 'desc' }],
+      take: +limit,
+      skip: cursor ? 1 : (+page - 1) * limit,
+      cursor: cursor
+        ? {
+            id: cursor,
+          }
+        : undefined,
+    };
+
+    const result = await this.prismaService.song.findMany(options);
+
+    // set cache
+    await this.redis.setex(key, 30, JSON.stringify(result));
+    //
+    return result;
   }
 
   async checkSongsExist(songIds: number[]): Promise<boolean> {

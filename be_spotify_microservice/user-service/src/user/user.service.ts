@@ -1,11 +1,8 @@
-import { roles } from './../../node_modules/.prisma/client/index.d';
 import { HttpCode, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { StatusUser } from '@prisma/client';
+import { StatusUser, users } from '@prisma/client';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { TokenPayload } from 'src/common/jwt/access_token.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -15,6 +12,7 @@ import { RegisterDto } from './dto/register-user.dto';
 import { RegisterResponseDto } from './dto/response/register.response.dto';
 import Redis from 'ioredis';
 import { CacheService } from 'src/cache/cache.service';
+import { PagingDto } from './common/paging/paging.dto';
 @Injectable()
 export class UserService {
   private redis: Redis;
@@ -25,6 +23,19 @@ export class UserService {
     @Inject('MAIL_SERVICE') private readonly mailService: ClientProxy,
   ) {
     this.redis = CacheService.getClient();
+  }
+
+  async getSingers(paging: PagingDto) {
+    return this.prismaService.users.findMany({
+      where: {
+        role: {
+          id: 3,
+        },
+      },
+      include: {
+        role: true,
+      },
+    });
   }
 
   async login({ username, password }: LoginDto): Promise<LoginResponse> {
@@ -39,7 +50,7 @@ export class UserService {
     });
     if (!foundUser || foundUser.status === StatusUser.Disable) {
       throw new RpcException({
-        message: 'User with username ' + username + ' not found',
+        message: 'Username or password incorrect',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
@@ -103,6 +114,7 @@ export class UserService {
     token: string;
     user_id: number;
   }): Promise<boolean> {
+    console.log('check payload', token, user_id);
     const decode = this.jwtService
       .verifyAsync<TokenPayload>(token, {
         secret: this.configService.get<string>('VERIFY_TOKEN_KEY'),
@@ -110,6 +122,7 @@ export class UserService {
       .then(async (res) => {
         // update user
         const isFound = await this.redis.get(`change_password:${user_id}`);
+        console.log('Check isFound: ' + isFound);
         if (!isFound || isFound === '') {
           // return false;
           throw new RpcException({
@@ -122,7 +135,7 @@ export class UserService {
           await this.redis.del(`change_password:${user_id}`),
           await this.redis.setex(
             `accepct_change_password:${user_id}`,
-            '30m',
+            30 * 60,
             1,
           ),
         ]);
@@ -130,6 +143,7 @@ export class UserService {
         //
       })
       .catch(async (err) => {
+        console.log('check error', err);
         return false;
       });
     return decode;
@@ -148,7 +162,7 @@ export class UserService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    await this.redis.setex(`change_password:${id}`, '5m', token);
+    await this.redis.setex(`change_password:${id}`, 300, token);
     this.mailService.emit('sendMail', {
       to: [foundUser.account],
       context: {
@@ -271,6 +285,8 @@ export class UserService {
         password: bcrypt.hashSync(newPassword, 10),
       },
     });
+
+    await this.redis.del(`accepct_change_password:${id}`);
     return newUser !== null;
   }
 }

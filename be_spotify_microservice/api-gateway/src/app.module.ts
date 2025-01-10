@@ -20,6 +20,7 @@ import { RecentSongModule } from './recent-song/recent-song.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { LikeSongModule } from './like-song/like-song.module';
 import { MailModule } from './mail/mail.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { MailModule } from './mail/mail.module';
     PlaylistModule,
     LikeSongModule,
     MailModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

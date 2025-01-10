@@ -44,6 +44,14 @@ export class SongService {
     );
   }
 
+  listPopularSong(paging: PagingDto) {
+    return lastValueFrom(
+      this.songService
+        .send('listPopularSong', paging)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
+  }
+
   findOne(id: number) {
     return lastValueFrom(
       this.songService

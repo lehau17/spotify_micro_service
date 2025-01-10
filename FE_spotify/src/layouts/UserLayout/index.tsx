@@ -18,15 +18,14 @@ export default function UserLayout() {
               <Header />
             </div>
             <div>
-
-            <Outlet />
-            <div>{PlayMusic()}</div>
+              <Outlet />
+              <div>{PlayMusic()}</div>
             </div>
             <Footer />
           </div>
-          <div className="list-friend fixed bottom-12 right-10">
+          {/* <div className="list-friend fixed bottom-12 right-10">
             <ListFriend />
-          </div>
+          </div> */}
         </ModalProvider>
       </div>
     </div>

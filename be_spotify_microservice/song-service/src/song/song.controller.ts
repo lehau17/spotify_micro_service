@@ -24,6 +24,11 @@ export class SongController {
     return this.songService.getListSong(payload);
   }
 
+  @MessagePattern('listPopularSong')
+  listPopularSong(@Payload() payload: PagingDto) {
+    return this.songService.listPopularSong(payload);
+  }
+
   @MessagePattern('taoBaiHat')
   create(@Payload() createSongDto: CreateSongDto) {
     return this.songService.create(createSongDto);

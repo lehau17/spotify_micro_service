@@ -1,14 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import "./sidebar.css";
-import {
-  Avatar,
-  Button,
-  Col,
-  Popover,
-  Row,
-  Space,
-  Typography,
-} from "antd";
+import { Avatar, Button, Col, Popover, Row, Space, Typography } from "antd";
 import { useModal } from "../../../globalContext/ModalContext";
 import { useAppSelector } from "../../../redux/hooks";
 import { TypePlaylistPost } from "../../../types/typePlaylist";
@@ -32,7 +24,7 @@ export default function Sidebar() {
   const [currentId, setCurrentId] = useState(null);
 
   useEffect(() => {
-    dispatch(getPlaylistByUser(currentUser?.user.userId));
+    dispatch(getPlaylistByUser(currentUser?.user?.userId));
   }, [playListDetailById, currentUser]);
 
   const handleCreatePlayList = async () => {
@@ -61,15 +53,15 @@ export default function Sidebar() {
           <span>Spotify</span>
         </button>
         <div className="flex justify-between items-center library mt-7">
-            <NavLink
-              to="/"
-              className="flex items-center text-white no-underline hover:text-gray-400"
-              style={{ cursor: "pointer" }}
-            >
-              <i className="fa-solid fa-house mr-2"></i>
-              <span>Home</span>
-            </NavLink>
-            </div>
+          <NavLink
+            to="/"
+            className="flex items-center text-white no-underline hover:text-gray-400"
+            style={{ cursor: "pointer" }}
+          >
+            <i className="fa-solid fa-house mr-2"></i>
+            <span>Home</span>
+          </NavLink>
+        </div>
         {/* <NavLink
           to={"search"}
           className={({ isActive }) =>
