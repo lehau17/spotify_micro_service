@@ -3,12 +3,13 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { CacheService } from 'src/cache/cache.service';
 
 @Module({
   imports: [
+    ConfigModule,
     ClientsModule.register([
       {
         name: 'MAIL_SERVICE',

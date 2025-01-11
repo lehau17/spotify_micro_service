@@ -44,6 +44,11 @@ services:
     build: ./be_spotify_microservice/like-song-service
     networks:
       - node-network
+  notify-service:
+    container_name: notify-service
+    build: ./be_spotify_microservice/notify-service
+    networks:
+      - node-network
   playlist-service:
     container_name: playlist-service
     build: ./be_spotify_microservice/playlist_service
