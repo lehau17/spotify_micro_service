@@ -1,4 +1,3 @@
-import { MailModule } from './../../notify-service/src/mail/mail.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './user/app.controller';
 import { AppService } from './app.service';
@@ -40,7 +39,6 @@ import { UserModule } from './user/user.module';
     RecentSongModule,
     PlaylistModule,
     LikeSongModule,
-    MailModule,
     UserModule,
   ],
   controllers: [AppController],

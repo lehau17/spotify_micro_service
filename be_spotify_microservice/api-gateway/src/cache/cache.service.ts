@@ -13,7 +13,7 @@ export class CacheService implements OnModuleInit {
       password: process.env.REDIS_PASSWORD,
       db: 0,
     });
-    this.logger.fatal('init cache service');
+    this.logger.error('init cache service');
   }
 
   // Phương thức để lấy Redis instance

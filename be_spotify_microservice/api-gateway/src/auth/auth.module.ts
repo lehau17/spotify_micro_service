@@ -2,13 +2,11 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MailModule } from 'src/mail/mail.module';
 import { MailService } from 'src/mail/mail.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    MailModule,
     ConfigModule, // Ensure ConfigModule is imported here
     ClientsModule.registerAsync([
       {
