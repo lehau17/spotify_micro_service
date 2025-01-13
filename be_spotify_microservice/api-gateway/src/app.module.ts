@@ -1,3 +1,4 @@
+import { MailModule } from './../../notify-service/src/mail/mail.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './user/app.controller';
 import { AppService } from './app.service';
@@ -19,7 +20,6 @@ import { DiscussModule } from './discuss/discuss.module';
 import { RecentSongModule } from './recent-song/recent-song.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { LikeSongModule } from './like-song/like-song.module';
-import { MailModule } from './mail/mail.module';
 import { UserModule } from './user/user.module';
 
 @Module({
