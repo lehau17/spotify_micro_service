@@ -30,7 +30,7 @@ async function bootstrap() {
       {
         throttlers: [
           {
-            limit: 5,
+            limit: Number(process.env.RATE_LIMIT_GLOBAL),
             ttl: 60,
             name: 'rate-limit:global',
             getTracker: (req: Record<string, any>, context: ExecutionContext) =>
@@ -45,7 +45,7 @@ async function bootstrap() {
       {
         throttlers: [
           {
-            limit: 5,
+            limit: Number(process.env.RATE_LIMIT_PUBLIC),
             ttl: 60,
             name: 'rate-limit:public',
             getTracker: (req: Record<string, any>, context: ExecutionContext) =>
@@ -62,7 +62,7 @@ async function bootstrap() {
       {
         throttlers: [
           {
-            limit: 5,
+            limit: Number(process.env.RATE_LIMIT_PRIVATE),
             ttl: 60,
             name: 'rate-limit:public',
             getTracker: (req: Record<string, any>, context: ExecutionContext) =>
