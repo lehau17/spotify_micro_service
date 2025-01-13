@@ -304,7 +304,7 @@ export class UserService {
       context: {
         verificationUrl:
           process.env.URL_BACKEND +
-          `/verify-account?verifyToken=${verifyEmail}`,
+          `/auth/verify-account?verifyToken=${verifyEmail}`,
         customerName: newUser.account,
         year: new Date().getFullYear(),
       },
