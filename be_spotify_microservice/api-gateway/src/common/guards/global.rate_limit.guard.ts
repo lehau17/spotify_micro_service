@@ -42,9 +42,8 @@ export class GlobalThrottlerGuard extends ThrottlerGuard {
     const request = context.switchToHttp().getRequest();
     // const key = 'rate-limit:global';
     const key = await this.getTracker(request);
-    // console.log('check ham lay key', checkKey);
-
     const rateLimitGlobal = await this.redis.get(key);
+    console.log('check limit', this.limit);
     if (rateLimitGlobal && +rateLimitGlobal >= this.limit) {
       throw new ThrottlerException('Too many requests');
     }
