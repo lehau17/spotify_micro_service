@@ -8,8 +8,6 @@ RUN yarn
 
 COPY . .
 
-RUN yarn build
-
 
 # RUN yarn config set network-timeout 600000
 
