@@ -2,21 +2,25 @@ import { Module } from '@nestjs/common';
 import { GerneService } from './gerne.service';
 import { GerneController } from './gerne.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'GERNE_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [process.env.RABBITMQ_URL],
-          queue: 'gerne_queue',
-          queueOptions: {
-            durable: false,
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('RABBITMQ_URL')],
+            queue: 'gerne_queue',
+            queueOptions: {
+              durable: false,
+            },
+            persistent: true,
           },
-          persistent: true,
-        },
+        }),
       },
     ]),
   ],
