@@ -8,9 +8,7 @@ async function bootstrap() {
     {
       transport: Transport.RMQ,
       options: {
-        urls: [
-          `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASS}@${process.env.RABBITMQ_HOST}:${process.env.RABIITMQ_PORT || 5672}`,
-        ],
+        urls: [process.env.RABBITMQ_URL],
         queue: 'song_queue',
         queueOptions: {
           durable: true,
