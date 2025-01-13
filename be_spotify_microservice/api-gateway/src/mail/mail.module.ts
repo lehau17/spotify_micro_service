@@ -9,17 +9,17 @@ import { MailService } from './mail.service';
     ConfigModule,
     ClientsModule.registerAsync([
       {
-        name: 'PLAYLIST_SERVICE',
+        name: 'MAIL_SERVICE',
         inject: [ConfigService], // Tiêm ConfigService
         useFactory: (configService: ConfigService) => ({
           transport: Transport.RMQ,
           options: {
             urls: [configService.get<string>('RABBITMQ_URL')],
-            queue: 'playlist_queue',
+            queue: 'mail_queue',
             queueOptions: {
               durable: true,
             },
-            persistent: false,
+            persistent: true,
           },
         }),
       },
