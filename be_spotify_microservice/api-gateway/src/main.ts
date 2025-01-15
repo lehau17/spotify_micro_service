@@ -1,6 +1,6 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ExecutionContext, ValidationPipe } from '@nestjs/common';
+import { ExecutionContext, ValidationPipe, Logger } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { HttpExceptionFilter } from './common/filters/HttpException';
@@ -11,9 +11,24 @@ import { GlobalThrottlerGuard } from './common/guards/global.rate_limit.guard';
 import { PublicThrottlerGuard } from './common/guards/public.rate_limiter.guard';
 import { AccessTokenGuard } from './common/guards/accessToken.guard';
 import { PrivateThrottlerGuard } from './common/guards/private.rate_limiter.guard';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  //logger
+  const logger = WinstonModule.createLogger({
+    defaultMeta: { service: 'API Gateway' },
+    transports: [
+      new winston.transports.Http({
+        host: 'localhost', // Tên container Logstash hoặc IP của Logstash
+        port: 5044, // Cổng kết nối với Logstash
+        level: 'info',
+      }),
+      new winston.transports.Console(),
+    ],
+  });
+  //
+  const app = await NestFactory.create(AppModule, { logger });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true, // Chuyển đổi dữ liệu vào DTO

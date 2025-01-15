@@ -10,6 +10,7 @@ import { Prisma, Song, Status } from '@prisma/client';
 import { CacheService } from 'src/cache/cache.service';
 import Redis from 'ioredis';
 import { Cron } from '@nestjs/schedule';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Injectable()
 export class SongService {

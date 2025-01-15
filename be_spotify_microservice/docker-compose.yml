@@ -8,57 +8,12 @@ services:
       - 3000:3000
     networks:
       - node-network
-    # depends_on:
-    #   - rabbitmq
-    #   - redis
+
   user-service:
     container_name: user-service
     build: ./user-service
     networks:
       - node-network
-    # depends_on:
-    #   - postgres
-
-  # redis:
-  #   container_name: some-redis
-  #   image: redis:latest
-  #   environment:
-  #     REDIS_PASSWORD: 1234 # Mật khẩu cho Redis
-  #   ports:
-  #     - 6379:6379
-  #   networks:
-  #     - node-network
-  #   command: ["redis-server", "--requirepass", "1234"] # Cấu hình Redis yêu cầu mật khẩu
-  #   volumes:
-  #     - redis-data:/data # Gắn volume 'redis-data' vào thư mục /data trong container
-  # postgres:
-  #   container_name: some-ostgres
-  #   image: postgres:latest
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: 1234
-  #   ports:
-  #     - 5432:5432
-  #   networks:
-  #     - node-network
-  #   volumes:
-  #     - postgres-data:/var/lib/postgresql/data
-  #     - ./volumes/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-  # mysql:
-  #   container_name: some-mysqll_5.7
-  #   image: mysql:5.7
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: 1234
-  #     MYSQL_DATABASE: baemin_post_shop_service
-  #     MYSQL_USER: root
-  #     MYSQL_PASSWORD: 1234
-  #   ports:
-  #     - 3307:3306
-  #   networks:
-  #     - node-network
-  #   volumes:
-  #     - mysql-data:/var/lib/mysql
-  #     - ./volumes/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 networks:
   node-network:

@@ -1,5 +1,5 @@
 {
-  "name": "song-service",
+  "name": "search-service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -25,15 +25,10 @@
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/elasticsearch": "^10.0.2",
-    "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^10.4.15",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/schedule": "^4.1.2",
-    "@prisma/client": "^6.1.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.5",
-    "ioredis": "^5.4.2",
-    "prisma": "^6.1.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },

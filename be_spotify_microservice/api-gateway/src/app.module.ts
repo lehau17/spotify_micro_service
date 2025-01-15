@@ -20,6 +20,7 @@ import { RecentSongModule } from './recent-song/recent-song.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { LikeSongModule } from './like-song/like-song.module';
 import { UserModule } from './user/user.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { UserModule } from './user/user.module';
     PlaylistModule,
     LikeSongModule,
     UserModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [
