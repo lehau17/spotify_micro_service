@@ -4,8 +4,9 @@
 
 .homePage .artists {
     display: flex;
+
     flex-wrap: wrap;
-    gap: 0 10px;
+    gap: 20px 15px;
 }
 
 .homePage .tittle {

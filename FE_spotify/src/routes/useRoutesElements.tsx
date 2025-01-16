@@ -6,6 +6,8 @@ import Playlist from "../modules/UserModule/playList/Playlist";
 import Genre from "../modules/UserModule/genre/Genre";
 import GenreAndSong from "../modules/UserModule/genreAndSong/GenreAndSong";
 import LoginForm from "@/modules/AuthModule/Login/Login";
+import PopularSinger from "@/modules/UserModule/popularSinger/Popular";
+import RecentSong from "@/modules/UserModule/recent-song/RecentSong";
 
 const useRoutesElements = () => {
   const isAuthenticated = !!localStorage.getItem("access_token"); // Kiểm tra accessToken
@@ -24,8 +26,16 @@ const useRoutesElements = () => {
           element: <HomePage />,
         },
         {
-          path: "detail-artists/:id",
-          element: <DetailArtists />,
+          path: "",
+          element: <HomePage />,
+        },
+        {
+          path: "popular-singer",
+          element: <PopularSinger />,
+        },
+        {
+          path: "recent-song",
+          element: <RecentSong />,
         },
         {
           path: "play-list/:id",

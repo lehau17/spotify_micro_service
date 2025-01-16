@@ -1,11 +1,9 @@
 import { Controller, Query } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register-user.dto';
-import { PagingDto } from './common/paging/paging.dto';
+import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Controller()
 export class UserController {
@@ -52,23 +50,9 @@ export class UserController {
   getSingerDetail(@Payload() { id, user_id }: { id: number; user_id: number }) {
     return this.userService.getSingerDetail(id, user_id);
   }
-  // @MessagePattern('findAllUser')
-  // findAll() {
-  //   return this.userService.findAll();
-  // }
 
   @MessagePattern('findOneUser')
   findOne(@Payload() id: number) {
     return this.userService.findOne(id);
   }
-
-  // @MessagePattern('updateUser')
-  // update(@Payload() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(updateUserDto.id, updateUserDto);
-  // }
-
-  // @MessagePattern('removeUser')
-  // remove(@Payload() id: number) {
-  //   return this.userService.remove(id);
-  // }
 }
