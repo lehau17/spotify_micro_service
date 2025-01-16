@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './user/app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
@@ -45,7 +44,7 @@ import { ListFriendModule } from './list-friend/list-friend.module';
     SearchModule,
     ListFriendModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     AppService,
     RedisThrottlerStorageService,
