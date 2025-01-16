@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -169,7 +164,6 @@ export class UserService {
     token: string;
     user_id: number;
   }): Promise<boolean> {
-    console.log('check payload', token, user_id);
     const decode = this.jwtService
       .verifyAsync<TokenPayload>(token, {
         secret: this.configService.get<string>('VERIFY_TOKEN_KEY'),
@@ -177,7 +171,6 @@ export class UserService {
       .then(async (res) => {
         // update user
         const isFound = await this.redis.get(`change_password:${user_id}`);
-        console.log('Check isFound: ' + isFound);
         if (!isFound || isFound === '') {
           // return false;
           throw new RpcException({
@@ -343,5 +336,23 @@ export class UserService {
 
     await this.redis.del(`accepct_change_password:${id}`);
     return newUser !== null;
+  }
+
+  findOne(id: number) {
+    return this.prismaService.users.findFirst({
+      where: { id },
+    });
+  }
+
+  async requestDisableAccount(id: number) {
+    const foundUser = await this.findOne(id);
+    if (!foundUser || foundUser.status !== 'Enable') {
+      throw new RpcException({
+        message: 'Bad Request',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    // send mail
+    return null;
   }
 }

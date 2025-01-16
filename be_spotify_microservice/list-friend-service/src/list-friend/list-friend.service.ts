@@ -23,12 +23,12 @@ export class ListFriendService {
     const objStatus = {
       Enable: new RpcException({
         message: 'Các bạn đã là bạn bè',
-        status: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.BAD_REQUEST,
       }),
       Disable: true,
       IsPending: new RpcException({
         message: 'Bạn đã gửi lời mời bạn bè',
-        status: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.BAD_REQUEST,
       }),
       IsRefuse: true,
     };
@@ -45,43 +45,76 @@ export class ListFriendService {
   }: CreateListFriendDto): Promise<ListFriends> {
     // check user
     const foundFriend = await lastValueFrom<UserDto>(
-      this.userService.send('', friend_id),
+      this.userService.send('findOneUser', friend_id),
     );
     if (!foundFriend || foundFriend.status === 'Disable') {
       throw new RpcException({
-        message: 'Bad Request',
+        message: 'Friend không tồn tại',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
     // check friend exist
-    const checkFoundFriendShip = await this.prismaService.$queryRaw<{
-      id: number;
-      status: string;
-    }>`select id, status from ListFriends where user_id = ${user_id} and friend_id = ${friend_id}`;
+    // const checkFoundFriendShip = await this.prismaService.$queryRaw<{
+    //   id: number;
+    //   status: string;
+    // }>`select id, status from "ListFriends" where user_id = ${user_id} and friend_id = ${friend_id}`;
+    const checkFoundFriendShip = await this.prismaService.listFriends.findFirst(
+      {
+        where: {
+          user_id,
+          friend_id,
+        },
+        select: {
+          id: true,
+          status: true,
+        },
+      },
+    );
 
-    const checkStatus = this.checkStatus(checkFoundFriendShip.status);
-    if (!checkStatus) {
-      throw new RpcException({
-        message: 'Bad Request',
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
+    if (checkFoundFriendShip) {
+      const checkStatus = this.checkStatus(checkFoundFriendShip.status);
+      if (!checkStatus) {
+        throw new RpcException({
+          message: 'Bad Request',
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
+      }
     }
+    // console.log('check found', checkFoundFriendShip);
 
     return this.create({ user_id, friend_id });
   }
 
-  async acceptFriendShip(id: number): Promise<ListFriends> {
+  async acceptFriendShip({
+    id,
+    receive_user_id,
+  }: {
+    id: number;
+    receive_user_id: number;
+  }): Promise<ListFriends> {
     const foundFriendShip = await this.findOne(id);
     if (!foundFriendShip || foundFriendShip.status !== Status.IsPending) {
       throw new RpcException({
-        message: 'Bad Request',
+        message: 'Friendship not found',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    if (foundFriendShip.friend_id !== receive_user_id) {
+      throw new RpcException({
+        message: 'Chỉ có người nhận mới có quyền chấp nhận kết bạn',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
     return this.changeStatus(id, Status.Enable);
   }
 
-  async deniedFriendShip(id: number): Promise<ListFriends> {
+  async deniedFriendShip({
+    id,
+    receive_user_id,
+  }: {
+    id: number;
+    receive_user_id: number;
+  }): Promise<ListFriends> {
     const foundFriendShip = await this.findOne(id);
     if (!foundFriendShip || foundFriendShip.status !== Status.IsPending) {
       throw new RpcException({
@@ -89,10 +122,22 @@ export class ListFriendService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
+    if (foundFriendShip.friend_id !== receive_user_id) {
+      throw new RpcException({
+        message: 'Chỉ có người nhận mới có quyền từ chối kết bạn',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
     return this.changeStatus(id, Status.IsRefuse);
   }
 
-  async deleteSendFriendShip(id: number): Promise<ListFriends> {
+  async deleteSendFriendShip({
+    id,
+    send_user_id,
+  }: {
+    id: number;
+    send_user_id: number;
+  }): Promise<ListFriends> {
     const foundFriendShip = await this.findOne(id);
     if (!foundFriendShip) {
       throw new RpcException({
@@ -100,12 +145,17 @@ export class ListFriendService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
+    if (foundFriendShip.user_id !== send_user_id)
+      throw new RpcException({
+        message: 'không có quyền gỡ',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
     return this.prismaService.listFriends.delete({
       where: { id },
     });
   }
 
-  async countFiend(user_id): Promise<number> {
+  async countFriend(user_id: number): Promise<number> {
     return this.prismaService
       .$queryRaw`select count(id) from ListFriends where user_id = ${user_id}`;
   }

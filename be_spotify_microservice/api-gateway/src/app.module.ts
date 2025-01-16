@@ -21,6 +21,7 @@ import { PlaylistModule } from './playlist/playlist.module';
 import { LikeSongModule } from './like-song/like-song.module';
 import { UserModule } from './user/user.module';
 import { SearchModule } from './search/search.module';
+import { ListFriendModule } from './list-friend/list-friend.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { SearchModule } from './search/search.module';
     LikeSongModule,
     UserModule,
     SearchModule,
+    ListFriendModule,
   ],
   controllers: [AppController],
   providers: [

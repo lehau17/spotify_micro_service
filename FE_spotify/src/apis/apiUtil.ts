@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "http://dev.haudev.io.vn",
 });
 
 // Request interceptor

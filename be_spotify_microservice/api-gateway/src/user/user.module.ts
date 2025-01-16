@@ -3,34 +3,45 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { MailModule } from 'src/mail/mail.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     MailModule,
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'USER_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [process.env.RABBITMQ_URL],
-          queue: 'user_queue',
-          queueOptions: {
-            durable: true,
+        inject: [ConfigService], // Tiêm ConfigService
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [
+              configService.get<string>('RABBITMQ_URL') || 'amqp://localhost',
+            ],
+            queue: 'user_queue',
+            queueOptions: {
+              durable: true,
+            },
+            persistent: false,
           },
-          persistent: false,
-        },
+        }),
       },
       {
         name: 'MAIL_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [process.env.RABBITMQ_URL],
-          queue: 'mail_queue',
-          queueOptions: {
-            durable: true,
+        inject: [ConfigService], // Tiêm ConfigService
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [
+              configService.get<string>('RABBITMQ_URL') || 'amqp://localhost',
+            ],
+            queue: 'mail_queue',
+            queueOptions: {
+              durable: true,
+            },
+            persistent: true,
           },
-          persistent: true,
-        },
+        }),
       },
     ]),
   ],

@@ -57,10 +57,10 @@ export class UserController {
   //   return this.userService.findAll();
   // }
 
-  // @MessagePattern('findOneUser')
-  // findOne(@Payload() id: number) {
-  //   return this.userService.findOne(id);
-  // }
+  @MessagePattern('findOneUser')
+  findOne(@Payload() id: number) {
+    return this.userService.findOne(id);
+  }
 
   // @MessagePattern('updateUser')
   // update(@Payload() updateUserDto: UpdateUserDto) {
