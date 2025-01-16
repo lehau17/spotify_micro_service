@@ -78,7 +78,14 @@ export class UserService {
         }),
       ),
     ]);
-    const isFollow = Boolean(checkFollower);
+    let isFollow = false;
+    if (checkFollower) {
+      if (checkFollower.status === 'Enable') {
+        isFollow = true;
+      } else {
+        isFollow = false;
+      }
+    }
     //
     return {
       ...foundSinger,

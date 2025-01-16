@@ -6,7 +6,7 @@ import SuccessResponse from "@/types/ver2/response.type";
 const followerApi = {
   togger: (payload: ToggeFollowingDto) => {
     return api.post<SuccessResponse<FollowingDto>>(
-      `/following/toggle`,
+      `/following/toogle`,
       payload
     );
   },
