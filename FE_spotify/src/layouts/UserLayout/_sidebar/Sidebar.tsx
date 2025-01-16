@@ -9,6 +9,8 @@ import { AppDispatch } from "../../../redux/store";
 import { createPlayList } from "../../../apis/apiPlayList/apiCreatePlayList";
 import { useEffect, useState } from "react";
 import { getPlaylistByUser } from "../../../apis/apiPlayList/apiGetPlayListByUser";
+import { useGetPlayListOfMeQuery, useLoginMutation } from "@/query/playlist";
+import { CreatePlaylistDto } from "@/types/ver2/playlist.type";
 const { Title, Text } = Typography;
 
 export default function Sidebar() {
@@ -16,32 +18,35 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const { currentUser } = useAppSelector((state) => state.currentUser);
   const dispatch = useDispatch<AppDispatch>();
-  const playlists = useAppSelector((state) => state.playlist.playLists);
+  // const playlists = useAppSelector((state) => state.playlist.playLists);
   const playListDetailById = useAppSelector(
     (state) => state.playlist.playListDetailById
   );
-  const playlistCount = playlists.length;
-  const [currentId, setCurrentId] = useState(null);
+  const [currentId, setCurrentId] = useState<number>();
+  const useCreatePlaylistMutation = useLoginMutation();
+  const { data: myPlayList } = useGetPlayListOfMeQuery({
+    page: 1,
+    limit: 50,
+  });
 
   useEffect(() => {
     dispatch(getPlaylistByUser(currentUser?.user?.userId));
   }, [playListDetailById, currentUser]);
 
   const handleCreatePlayList = async () => {
-    const newPlaylist: TypePlaylistPost = {
-      userId: currentUser.user.userId,
-      imagePath:
+    const newPlaylist: CreatePlaylistDto = {
+      image_path:
         "https://images.macrumors.com/t/hi1_a2IdFGRGMsJ0x31SdD_IcRk=/1600x/article-new/2018/05/apple-music-note.jpg",
-      playlistName: `Danh sách phát của tôi #${playlistCount + 1}`,
+      playlist_name: `Danh sách phát của tôi #${
+        (myPlayList?.data?.data?.length as number) + 1
+      }`,
       description: "Your description here",
     };
 
-    const result = await dispatch(createPlayList(newPlaylist));
+    const result = await useCreatePlaylistMutation.mutateAsync(newPlaylist);
     if (result) {
-      navigate(`/play-list/${result.id}`);
-      dispatch(getPlaylistByUser(currentUser?.user.userId));
+      navigate(`/play-list/${result.data.data.id}`);
     } else {
-      console.log("Failed to create playlist.");
     }
   };
 
@@ -122,73 +127,84 @@ export default function Sidebar() {
                 </Popover>
               </div>
             ) : (
-              <div>
-                <p className="font-bold mt-2 mb-4 ml-5 text-green-600">
-                  Your Playlists
-                </p>
+              <div className="p-3">
+                <p className="font-bold text-white">Your Playlists</p>
                 <ul>
-                  {playlists.map((playlist: any) => (
-                    <li
-                      style={{
-                        backgroundColor:
+                  {myPlayList?.data?.data.length === 0 ? (
+                    <>
+                      <li className="text-[12px]">
+                        Hãy cùng tạo danh sách phát nhạc để tận hưởng âm nhạc
+                        bạn nhé !
+                      </li>
+                      <Button
+                        type="primary"
+                        className="btn-createPlaylist"
+                        onClick={handleCreatePlayList}
+                      >
+                        Create new playlist
+                      </Button>
+                    </> // Hiển thị thông báo nếu danh sách trống
+                  ) : (
+                    myPlayList?.data?.data.map((playlist) => (
+                      <li
+                        key={playlist.id}
+                        onClick={() => {
+                          navigate(`./play-list/${playlist.id}`);
+                          setCurrentId(playlist.id);
+                        }}
+                        className={`relative ${
                           currentId === playlist.id
-                            ? "rgba(255, 255, 255, 0.1)"
-                            : "transparent", // Change the background color when the id matches
-                        padding: "3px 10px",
-                        borderRadius: "5px", // Add some rounding to the corners if desired
-                        cursor: "pointer", // Change the cursor to pointer on hover
-                      }}
-                      key={playlist.id}
-                      onClick={() => {
-                        navigate(`./play-list/${playlist.id}`);
-                        setCurrentId(playlist.id);
-                      }}
-                    >
-                      <Row align="middle" style={{ marginBottom: "10px" }}>
-                        <Col span={6}>
-                          <Avatar
-                            shape="square"
-                            size={45}
-                            src={playlist.imagePath}
-                            alt="Playlist cover"
-                          />
-                        </Col>
-                        <Col span={18}>
-                          <Space direction="vertical">
-                            <Title
-                              style={{
-                                color: "white",
-                                margin: "0",
-                                fontSize: "13px",
-                                fontWeight: "bold",
-                                lineHeight: "0.5",
-                              }}
-                            >
-                              {playlist.playlistName}
-                            </Title>
-                            <Text
-                              style={{
-                                color: "gray",
-                                fontSize: "10px",
-                                margin: "0",
-                                lineHeight: "1",
-                              }}
-                            >
-                              Danh sách phát • {currentUser.user?.name}
-                            </Text>
-                          </Space>
-                        </Col>
-                      </Row>
-                    </li>
-                  ))}
+                            ? "bg-opacity-10"
+                            : "bg-transparent"
+                        } 
+                            hover:bg-opacity-20 
+                            hover:bg-gray-500 
+                            transition-all duration-300 
+                            py-1 px-2 
+                            rounded-lg cursor-pointer`}
+                      >
+                        {/* Tạo lớp overlay khi hover */}
+                        <div className="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
+
+                        <Row align="middle" style={{ marginBottom: "10px" }}>
+                          <Col span={6}>
+                            <Avatar
+                              shape="square"
+                              size={45}
+                              src={playlist.image_path}
+                              alt="Playlist cover"
+                            />
+                          </Col>
+                          <Col span={18}>
+                            <Space direction="vertical">
+                              <Title
+                                style={{
+                                  color: "white",
+                                  margin: "0",
+                                  fontSize: "13px",
+                                  fontWeight: "bold",
+                                  lineHeight: "0.5",
+                                }}
+                              >
+                                {playlist.playlist_name}
+                              </Title>
+                              <Text
+                                style={{
+                                  color: "gray",
+                                  fontSize: "10px",
+                                  margin: "0",
+                                  lineHeight: "1",
+                                }}
+                              >
+                                Danh sách phát • {currentUser.user?.name}
+                              </Text>
+                            </Space>
+                          </Col>
+                        </Row>
+                      </li>
+                    ))
+                  )}
                 </ul>
-                <Button
-                  type="primary"
-                  className="btn-createPlaylist"
-                  onClick={handleCreatePlayList}
-                >
-                  Create new playlist
-                </Button>
               </div>
             )}
           </div>

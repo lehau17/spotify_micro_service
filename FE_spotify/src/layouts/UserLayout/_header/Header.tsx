@@ -54,7 +54,13 @@ export default function Header() {
                   <DropdownMenuItem>Hồ Sơ</DropdownMenuItem>
                   <DropdownMenuItem>Cài đặt</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      handleLogout();
+                    }}
+                  >
+                    Đăng xuất
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (

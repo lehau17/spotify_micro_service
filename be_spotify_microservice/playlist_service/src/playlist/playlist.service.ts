@@ -5,7 +5,8 @@ import { playlists, Prisma } from '@prisma/client';
 import { PagingDto } from 'src/common/paging/paging.dto';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-
+import { PlaylistResponse } from './dto/playlist-response.dto';
+import _ from 'lodash';
 @Injectable()
 export class PlaylistService {
   constructor(
@@ -50,14 +51,34 @@ export class PlaylistService {
     return this.prismaService.playlists.findMany(options);
   }
 
-  async findOne(id: number): Promise<playlists> {
+  async findOne(id: number): Promise<PlaylistResponse> {
     const playlistFound = await this.prismaService.playlists.findUnique({
       where: {
         id,
       },
     });
+
+    let dataResponse: PlaylistResponse;
+    const songIds = playlistFound.songs as number[];
+
     // call service playlistsong
-    return playlistFound;
+    if (songIds.length > 0) {
+      const listSong = await lastValueFrom<Record<number, SongDto>>(
+        this.songService.send('getListSong', songIds),
+      );
+
+      dataResponse = {
+        ..._.omit(playlistFound, ['songs']),
+        songs: songIds.map((songId) => listSong[songId]), // Đóng ngoặc đúng cách
+      };
+    } else {
+      dataResponse = {
+        ..._.omit(playlistFound, ['songs']),
+        songs: [],
+      };
+    }
+
+    return dataResponse;
   }
 
   async addSongToPlaylist({

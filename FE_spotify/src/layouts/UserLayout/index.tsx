@@ -17,7 +17,7 @@ export default function UserLayout() {
             <Sidebar />
           </div>
           <div style={{ width: "80%" }}>
-            <div>
+            <div className="pt-9">
               <Outlet />
               <div>{PlayMusic()}</div>
             </div>
