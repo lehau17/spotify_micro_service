@@ -12,13 +12,13 @@ import { RegisterDto } from './dto/register-user.dto';
 import { RegisterResponseDto } from './dto/response/register.response.dto';
 import Redis from 'ioredis';
 import { CacheService } from 'src/cache/cache.service';
-import { PagingDto } from './common/paging/paging.dto';
 import { last, lastValueFrom } from 'rxjs';
 import {
   DetailSingerResponseDto,
   SongDto,
 } from './dto/response/singer-detail.dto.response';
 import { Following } from './dto/response/follow.dtp.response';
+import { PagingDto } from 'src/common/paging/paging.dto';
 @Injectable()
 export class UserService {
   private redis: Redis;
