@@ -1,6 +1,5 @@
 .sidebar {
   color: white;
-  padding-left: 20px;
   line-height: 40px;
 }
 
@@ -13,12 +12,12 @@
 }
 
 .sidebar .sidebar-top .logo-spotify {
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 800;
 }
 
 .sidebar .sidebar-top i {
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .sidebar .sidebar-top .btn-home,
@@ -41,22 +40,21 @@
 }
 
 .sidebar-bottom .library {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   padding-left: 20px;
   color: gray;
 }
 
 .sidebar-bottom .library i {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin-right: 20px;
 }
 
 .sidebar-bottom .create-playlist {
   background-color: #1f1f1f;
   border-radius: 10px;
-  margin: 0 10px 40px;
-  padding: 10px 10px;
+  margin: 0 10px 20px;
   line-height: 30px;
 }
 
@@ -66,7 +64,7 @@
   border-radius: 20px;
   padding: 3px 15px;
   font-weight: 500;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .sidebar-bottom .footer-sidebar-bottom {
   margin: 0 20px;

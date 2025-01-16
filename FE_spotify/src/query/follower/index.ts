@@ -5,9 +5,7 @@ import { toast } from "react-toastify";
 export const useToggleFollowingMutation = () => {
   return useMutation({
     mutationFn: followerApi.togger,
-    onSuccess: () => {
-      toast.success("Bạn đã theo dõi thành công ");
-    },
+    onSuccess: () => {},
     onError: (err) => {
       toast.error(err.message);
     },

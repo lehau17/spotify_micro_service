@@ -13,6 +13,13 @@ const songApi = {
       },
     });
   },
+  getSong: (id: number) => {
+    return api.get<SuccessResponse<SongDto>>(`song/${id}`);
+  },
+
+  increaseSong: (id: number) => {
+    return api.patch(`song/${id}/inc-view`);
+  },
 };
 
 export default songApi;

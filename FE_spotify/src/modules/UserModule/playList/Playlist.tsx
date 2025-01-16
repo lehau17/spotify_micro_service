@@ -56,7 +56,7 @@ const PlaylistComponent = () => {
   const [users, setUsers] = useState<TypeUser[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { setIdMusic } =  useGlobalContext();
+  const { setIdMusic } = useGlobalContext();
   const [isVisible, setIsVisible] = useState(true);
   const [currentPlayingSongId, setCurrentPlayingSongId] = useState<
     number | null
@@ -148,8 +148,8 @@ const PlaylistComponent = () => {
   const handlePlayPlaylist = () => {
     const allIds = playListDetailById.PlaylistSongs?.map((song) => song.songId); // Lấy tất cả các id
     if (allIds && allIds.length > 0) {
-      // setSongQueue(allIds); 
-      // setCurrentPlayingSongId(allIds[0]); 
+      // setSongQueue(allIds);
+      // setCurrentPlayingSongId(allIds[0]);
       setIdMusic(String(allIds[0]));
       // funcSongEndProps(handleSongEnd)
     }
@@ -157,7 +157,7 @@ const PlaylistComponent = () => {
 
   // const handleSongEnd = () => {
   //   if (songQueue.length > 0) {
-  //     const newQueue = songQueue.slice(1); 
+  //     const newQueue = songQueue.slice(1);
   //     setSongQueue(newQueue);
   //     if (newQueue.length > 0) {
   //       setCurrentPlayingSongId(newQueue[0]);
@@ -172,7 +172,6 @@ const PlaylistComponent = () => {
   // );
 
   // console.log(currentSong);
-  
 
   const menu = (
     <Menu onClick={handleMenuClick} style={{ backgroundColor: "#3f3f3f" }}>
@@ -612,7 +611,6 @@ const PlaylistComponent = () => {
           </div>
         </Form>
       </Modal>
-
     </div>
   );
 };

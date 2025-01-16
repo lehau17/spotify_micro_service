@@ -5,27 +5,26 @@ import { useGlobalContext } from "../../../globalContext/GlobalContext";
 import { Button } from "antd";
 import { UserAddOutlined, UserOutlined } from "@ant-design/icons";
 
-import { useGetSingerDetailQuery } from "@/query/song";
+import { useGetSingerDetailQuery, useIncreaseSongMutation } from "@/query/song";
 import { DetailSingerResponseDto } from "@/types/ver2/user.type";
 import { toast } from "react-toastify";
 import { useToggleFollowingMutation } from "@/query/follower";
+import { useModal } from "@/globalContext/ModalContext";
 
 export default function DetailArtists() {
   // const { currentUser } = useAppSelector((state) => state.currentUser)
   // const { userId } = currentUser?.user
   const { id } = useParams();
+  const { openModal } = useModal();
 
   const { setIdMusic } = useGlobalContext();
-  const { setNameArtists } = useGlobalContext();
-  const [follow, isFollow] = useState(false);
+
   const [isFriend, setIsFriend] = useState(false);
   const [dataDetail, setDataDetail] = useState<DetailSingerResponseDto>();
 
-  const { data, isLoading, isError, error, refetch } = useGetSingerDetailQuery(
-    Number(id)
-  );
+  const { data, isError, error, refetch } = useGetSingerDetailQuery(Number(id));
   const useToggerMutation = useToggleFollowingMutation();
-
+  const useIncreaseViewMutation = useIncreaseSongMutation();
   const handleToggleFollowingMutation = async () => {
     await useToggerMutation.mutateAsync({ following_user_id: Number(id) });
     refetch();
@@ -40,19 +39,6 @@ export default function DetailArtists() {
     }
   }, [data]);
 
-  // const apiCheckFollow = async () => {
-  //   if (currentUser) {
-  //     const result = await apiGetFollow(currentUser.user.userId, id);
-  //     isFollow(result.isFollowing);
-  //   }
-  // };
-
-  // Api getSong
-  // const callApiGetSong = async () => {
-  //   const result = await apiGetSongById(id);
-  //   setDataSong(Array.isArray(result) ? result : [result]);
-  // };
-
   const handlerTotalViewer = () => {
     let totalViewer = 0;
     if (dataDetail) {
@@ -65,6 +51,11 @@ export default function DetailArtists() {
 
   const handlerGetIdMusic = (id: any) => {
     setIdMusic(id);
+    useIncreaseViewMutation.mutate(id, {
+      onError: () => {
+        toast.error("Lỗi tăng view");
+      },
+    });
   };
 
   const renderTableSong = () => {
@@ -124,7 +115,7 @@ export default function DetailArtists() {
 
       <div className="song-artists">
         <div className="button">
-          <button className="btn-play">
+          <button className="btn-play" onClick={openModal}>
             <i className="fa-solid fa-circle-play"></i>
           </button>
           <button className="btn-follow mt-4">
@@ -161,7 +152,9 @@ export default function DetailArtists() {
           )}
         </div>
         <div className="list-song">
-          <h1 className="tittle-list-song mb-3 text-white">Popular</h1>
+          <h1 className="tittle-list-song mb-3 text-white">
+            Những bài nhạc phổ biến
+          </h1>
           <div>
             <table className="table-auto border-separate border-spacing-x-20">
               <tbody className="text-white">{renderTableSong()}</tbody>

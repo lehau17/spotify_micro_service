@@ -1,18 +1,19 @@
 import { Button } from "antd";
 import "./header.css";
 import { useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input";
 import { SearchOutlined } from "@ant-design/icons";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const navigate = useNavigate();
-  const currentUser = localStorage.getItem("user");
-  const handlerPrev = () => {
-    navigate(-1);
-  };
-  const handlerNext = () => {
-    navigate(1);
-  };
+  const currentUser = JSON.parse(localStorage.getItem("user") as string);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -23,16 +24,12 @@ export default function Header() {
 
   return (
     <>
-      <header id="css-header">
-        <div className="flex justify-between">
-          <div className="header-left">
-            <button onClick={handlerPrev}>
-              <i className="fa-solid fa-chevron-left"></i>
-            </button>
-            <button onClick={handlerNext}>
-              <i className="fa-solid fa-chevron-right"></i>
-            </button>
-          </div>
+      <header id="css-header" className="w-full">
+        <div className="flex justify-between pl-5">
+          <button className="logo-spotify">
+            <i className="fa-brands fa-spotify mr-2"></i>
+            <span>Spotify</span>
+          </button>
 
           <div className="bg-gray-800 rounded-full flex items-center justify-between p-2 focus:outline-none focus:border-none w-[300px]">
             <SearchOutlined className="px-2" />
@@ -44,7 +41,22 @@ export default function Header() {
 
           <div className="header-right">
             {currentUser ? (
-              <Button onClick={handleLogout}>Log out</Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    className="w-[40px] h-[40px] rounded-full cursor-pointer"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
+                  <DropdownMenuItem>Hồ Sơ</DropdownMenuItem>
+                  <DropdownMenuItem>Cài đặt</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Button className="btn-signup">Sign up</Button>

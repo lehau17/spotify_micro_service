@@ -1,0 +1,26 @@
+.modal {
+  position: fixed; /* Cố định modal ở một vị trí trong cửa sổ trình duyệt */
+  bottom: 0;       /* Đảm bảo modal luôn ở dưới cùng */
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Nền mờ cho modal */
+  z-index: 9999;   /* Đảm bảo modal luôn ở trên các phần tử khác */
+  display: flex;   /* Để canh giữa nội dung modal */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+}
+
+.modal-content {
+  background-color: white; /* Nền trắng cho modal */
+  padding: 20px;
+  border-radius: 8px; /* Bo tròn các góc */
+  width: 100%; /* Modal chiếm toàn bộ chiều rộng */
+  max-width: 500px; /* Chiều rộng tối đa của modal */
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Tạo bóng cho modal */
+  transform: translateY(100%); /* Khởi tạo modal từ dưới lên */
+  transition: transform 0.3s ease-in-out; /* Hiệu ứng khi modal xuất hiện */
+}
+
+.modal.show .modal-content {
+  transform: translateY(0); /* Modal di chuyển lên khi hiển thị */
+}
