@@ -14,4 +14,4 @@ RUN npx prisma generate
 
 RUN yarn build
 
-CMD [ "node",  "dist/main.js" ]
+CMD [ "yarn",  "start:prod" ]

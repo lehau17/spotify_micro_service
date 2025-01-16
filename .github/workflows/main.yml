@@ -75,7 +75,7 @@ jobs:
             # follow-service
             echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./following-service/.env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL_FOLLOW_SERVICE }}" >> ./following-service/.env
-            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./following-service/.following
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./following-service/.env
             echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./following-service/.env
             echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./following-service/.env
             echo "REDIS_DB=${{ secrets.REDIS_DB }}" >> ./following-service/.env
