@@ -8,7 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from './cache/cache.module';
 import { CacheService } from './cache/cache.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { SearchEngineModule } from './elastic/elastic.module';
 
 @Global()
 @Module({
@@ -18,7 +17,6 @@ import { SearchEngineModule } from './elastic/elastic.module';
     ScheduleModule.forRoot(),
     PrismaModule,
     CacheModule,
-    SearchEngineModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, CacheService],
