@@ -3,13 +3,22 @@ import "./sidebar.css";
 import { Avatar, Button, Col, Popover, Row, Space, Typography } from "antd";
 import { useModal } from "../../../globalContext/ModalContext";
 import { useAppSelector } from "../../../redux/hooks";
-import { TypePlaylistPost } from "../../../types/typePlaylist";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
-import { createPlayList } from "../../../apis/apiPlayList/apiCreatePlayList";
 import { useEffect, useState } from "react";
 import { getPlaylistByUser } from "../../../apis/apiPlayList/apiGetPlayListByUser";
-import { useGetPlayListOfMeQuery, useLoginMutation } from "@/query/playlist";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  useCreatePlaylistMutation,
+  useGetPlayListOfMeQuery,
+} from "@/query/playlist";
 import { CreatePlaylistDto } from "@/types/ver2/playlist.type";
 const { Title, Text } = Typography;
 
@@ -23,7 +32,7 @@ export default function Sidebar() {
     (state) => state.playlist.playListDetailById
   );
   const [currentId, setCurrentId] = useState<number>();
-  const useCreatePlaylistMutation = useLoginMutation();
+  const useCreatePlaylist = useCreatePlaylistMutation();
   const { data: myPlayList } = useGetPlayListOfMeQuery({
     page: 1,
     limit: 50,
@@ -43,7 +52,7 @@ export default function Sidebar() {
       description: "Your description here",
     };
 
-    const result = await useCreatePlaylistMutation.mutateAsync(newPlaylist);
+    const result = await useCreatePlaylist.mutateAsync(newPlaylist);
     if (result) {
       navigate(`/play-list/${result.data.data.id}`);
     } else {
@@ -91,7 +100,20 @@ export default function Sidebar() {
               <i className="fa-solid fa-lines-leaning"></i>Thư Viện
             </div>
             <button>
-              <i className="fa-solid fa-plus"></i>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="outline-none">
+                  <i className="fa-solid fa-plus"></i>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel
+                    onClick={() => {
+                      handleCreatePlayList();
+                    }}
+                  >
+                    Tạo danh sách phát mới
+                  </DropdownMenuLabel>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </button>
           </div>
 

@@ -14,7 +14,7 @@ export const useGetPlayListOfMeQuery = ({
   });
 };
 
-export const useLoginMutation = () => {
+export const useCreatePlaylistMutation = () => {
   return useMutation({
     mutationFn: playListApi.createPlaylist,
     onError: (err) => {

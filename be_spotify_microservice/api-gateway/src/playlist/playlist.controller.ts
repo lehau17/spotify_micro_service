@@ -86,6 +86,7 @@ export class PlaylistController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    console.log('check id: ' + id);
     return this.playlistService.findOne(+id);
   }
 

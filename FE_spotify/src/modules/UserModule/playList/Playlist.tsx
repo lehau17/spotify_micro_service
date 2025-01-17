@@ -41,6 +41,7 @@ import "./Playlist.css";
 import { addSongToPlaylist } from "../../../apis/apiPlayList/apiAddSongToPlaylist";
 import { editPlaylist } from "../../../apis/apiPlayList/apiEditPlaylist";
 import { deletePlaylist } from "../../../apis/apiPlayList/apiDeletePlaylist";
+import { useCreatePlaylistMutation } from "@/query/playlist";
 
 const { Title, Text } = Typography;
 
@@ -62,7 +63,6 @@ const PlaylistComponent = () => {
     number | null
   >(null);
   // const [songQueue, setSongQueue] = useState<number[]>([]);
-
   const callApiGetUser = async () => {
     const result = await apiGetUser();
     setUsers(Array.isArray(result) ? result : [result]);
