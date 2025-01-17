@@ -39,8 +39,6 @@ class PlaylistServiceVer2 {
         songs: [],
       };
     }
-    console.log('Check data response', dataResponse);
-
     return dataResponse;
   }
 }

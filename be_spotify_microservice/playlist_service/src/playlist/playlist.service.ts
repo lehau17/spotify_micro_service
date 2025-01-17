@@ -68,7 +68,6 @@ export class PlaylistService {
       const listSong = await lastValueFrom<SongDto[]>(
         this.songService.send('getListSongReturnArray', songIds),
       );
-      console.log('check listSong', listSong);
 
       dataResponse = {
         ...playlistFound,
@@ -80,6 +79,7 @@ export class PlaylistService {
         songs: [],
       };
     }
+    console.log('Check data response', dataResponse);
 
     return dataResponse;
   }

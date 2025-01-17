@@ -29,7 +29,7 @@ import PlaylistVer2Controller from './playlist.ver2.controller';
       },
     ]),
   ],
-  controllers: [PlaylistController, PlaylistVer2Controller],
+  controllers: [PlaylistController],
   providers: [PlaylistService, PlaylistServiceVer2],
 })
 export class PlaylistModule {}

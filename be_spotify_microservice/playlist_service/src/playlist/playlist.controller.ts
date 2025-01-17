@@ -3,10 +3,14 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PlaylistService } from './playlist.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { PagingDto } from 'src/common/paging/paging.dto';
+import PlaylistServiceVer2 from './playlist.ver2.service';
 
 @Controller()
 export class PlaylistController {
-  constructor(private readonly playlistService: PlaylistService) {}
+  constructor(
+    private readonly playlistService: PlaylistService,
+    private readonly playlistServiceVer2: PlaylistServiceVer2,
+  ) {}
 
   @MessagePattern('createPlaylist')
   create(@Payload() createPlaylistDto: CreatePlaylistDto) {
@@ -18,6 +22,10 @@ export class PlaylistController {
     return this.playlistService.findAll(paging);
   }
 
+  @MessagePattern('findOnePlaylist')
+  findOne(@Payload() payload: number) {
+    return this.playlistServiceVer2.findOne(payload);
+  }
   @MessagePattern('addSongToPlaylist')
   addSong(
     @Payload() payload: { song_ids: number[]; id: number; user_id: number },
