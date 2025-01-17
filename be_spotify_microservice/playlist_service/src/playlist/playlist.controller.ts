@@ -3,7 +3,6 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PlaylistService } from './playlist.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { PagingDto } from 'src/common/paging/paging.dto';
-import PlaylistServiceVer2 from './playlist.ver2.service';
 
 @Controller()
 export class PlaylistController {
