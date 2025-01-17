@@ -49,7 +49,7 @@ function isRetryableError(error: any): boolean {
       return true;
     }
   }
-  if (error.includes('no matching')) {
+  if (typeof error === 'string' && error.includes('no matching')) {
     return true;
   }
 
