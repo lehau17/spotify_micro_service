@@ -65,14 +65,14 @@ export class PlaylistService {
 
     // call service playlistsong
     if (songIds.length > 0) {
-      const listSong = await lastValueFrom<Record<number, SongDto>>(
-        this.songService.send('getListSong', songIds),
+      const listSong = await lastValueFrom<SongDto[]>(
+        this.songService.send('getListSongReturnArray', songIds),
       );
       console.log('check listSong', listSong);
 
       dataResponse = {
         ...playlistFound,
-        songs: songIds.map((songId) => listSong[songId]), // Đóng ngoặc đúng cách
+        songs: listSong,
       };
     } else {
       dataResponse = {

@@ -8,7 +8,7 @@ import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Injectable()
 export class PlaylistService {
-  private readonly topic: string = 'findOneVer2';
+  private readonly topic: string = 'findOnePlaylist';
   constructor(
     @Inject('PLAYLIST_SERVICE') private readonly playlistService: ClientProxy,
   ) {}

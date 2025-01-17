@@ -6,7 +6,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 class PlaylistVer2Controller {
   constructor(private readonly playlistServiceVer2: PlaylistServiceVer2) {}
 
-  @MessagePattern('findOneVer2')
+  @MessagePattern('findOnePlaylist')
   findOne(@Payload() payload: number) {
     return this.playlistServiceVer2.findOne(payload);
   }

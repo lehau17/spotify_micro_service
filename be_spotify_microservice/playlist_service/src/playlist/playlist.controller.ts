@@ -7,14 +7,8 @@ import PlaylistServiceVer2 from './playlist.ver2.service';
 
 @Controller()
 export class PlaylistController {
-  constructor(
-    private readonly playlistService: PlaylistService,
-    private readonly playlistServiceVer2: PlaylistServiceVer2,
-  ) {}
-  @MessagePattern('getPlaylist')
-  getPlaylistDetail(@Payload() id: number) {
-    return this.playlistServiceVer2.findOne(id);
-  }
+  constructor(private readonly playlistService: PlaylistService) {}
+
   @MessagePattern('createPlaylist')
   create(@Payload() createPlaylistDto: CreatePlaylistDto) {
     return this.playlistService.create(createPlaylistDto);
@@ -23,11 +17,6 @@ export class PlaylistController {
   @MessagePattern('findAllPlaylist')
   findAll(@Payload() paging: PagingDto & { user_id: number }) {
     return this.playlistService.findAll(paging);
-  }
-
-  @MessagePattern('findOnePlaylist')
-  findOne(@Payload() id: number) {
-    return this.playlistService.findOne(id);
   }
 
   @MessagePattern('addSongToPlaylist')
