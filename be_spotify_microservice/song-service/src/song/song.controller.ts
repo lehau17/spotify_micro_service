@@ -24,6 +24,11 @@ export class SongController {
     return this.songService.getListSong(payload);
   }
 
+  @MessagePattern('getListSongReturnArray')
+  getListSongReturnArray(@Payload() payload: number[]) {
+    return this.songService.getListSongReturnArray(payload);
+  }
+
   @EventPattern('incView')
   incView(@Payload() payload: number) {
     return this.songService.increaseViewInRedis(payload);

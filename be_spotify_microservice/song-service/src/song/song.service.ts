@@ -142,6 +142,20 @@ export class SongService {
     return result;
   }
 
+  async getListSongReturnArray(ids: number[]): Promise<Song[]> {
+    // get database
+    const foundSongs = await this.prismaService.song.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+        status: 'Enable',
+      },
+    });
+
+    return foundSongs;
+  }
+
   async listSongByUser(id: number): Promise<Song[]> {
     const options: Prisma.SongFindManyArgs = {
       where: {
