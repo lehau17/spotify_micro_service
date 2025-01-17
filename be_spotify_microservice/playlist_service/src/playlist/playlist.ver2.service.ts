@@ -13,14 +13,23 @@ class PlaylistServiceVer2 {
     @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
   ) {}
 
-  async findOne(id: number): Promise<playlists> {
+  async findOne(id: number) {
     const playlistFound = await this.prismaService.playlists.findUnique({
       where: {
         id,
       },
     });
-
-    return playlistFound;
+    const song_details = await lastValueFrom(
+      this.songService.send<SongDto[]>(
+        'getListSongReturnArray',
+        playlistFound.songs,
+      ),
+    );
+    console.log('Check ', song_details);
+    return {
+      ...playlistFound,
+      song_details,
+    };
   }
 }
 
