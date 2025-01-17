@@ -60,7 +60,7 @@ export class PlaylistService {
     const song_details = await lastValueFrom(
       this.songService.send<SongDto[]>(
         'getListSongReturnArray',
-        playlistFound.songs,
+        playlistFound.songs as Number[],
       ),
     );
     console.log('Check ', song_details);
