@@ -86,16 +86,7 @@ export class PlaylistController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    console.log('check id: ' + id);
     return this.playlistService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updatePlaylistDto: UpdatePlaylistDto,
-  ) {
-    return this.playlistService.update(+id, updatePlaylistDto);
   }
 
   @Patch(':id/add-songs')
