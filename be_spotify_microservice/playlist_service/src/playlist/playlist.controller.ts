@@ -1,14 +1,20 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PlaylistService } from './playlist.service';
-import { CreatePlaylistDto, SongDto } from './dto/create-playlist.dto';
-import { UpdatePlaylistDto } from './dto/update-playlist.dto';
+import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { PagingDto } from 'src/common/paging/paging.dto';
+import PlaylistServiceVer2 from './playlist.ver2.service';
 
 @Controller()
 export class PlaylistController {
-  constructor(private readonly playlistService: PlaylistService) {}
-
+  constructor(
+    private readonly playlistService: PlaylistService,
+    private readonly playlistServiceVer2: PlaylistServiceVer2,
+  ) {}
+  @MessagePattern('getPlaylist')
+  getPlaylistDetail(@Payload() id: number) {
+    return this.playlistServiceVer2.findOne(id);
+  }
   @MessagePattern('createPlaylist')
   create(@Payload() createPlaylistDto: CreatePlaylistDto) {
     return this.playlistService.create(createPlaylistDto);

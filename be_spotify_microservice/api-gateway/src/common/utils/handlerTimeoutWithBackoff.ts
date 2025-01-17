@@ -45,6 +45,12 @@ function isRetryableError(error: any): boolean {
     if (error.message && error.message.includes('Timeout')) {
       return true;
     }
+    if (error.message && error.message.includes('no matching')) {
+      return true;
+    }
+  }
+  if (error.includes('no matching')) {
+    return true;
   }
 
   // Kiểm tra lỗi HTTP 5xx từ server

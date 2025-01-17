@@ -3,10 +3,11 @@ import { PlaylistService } from './playlist.service';
 import { PlaylistController } from './playlist.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Import ConfigService
+import PlaylistServiceVer2 from './playlist.ver2.service';
+import PlaylistVer2Controller from './playlist.ver2.controller';
 
 @Module({
   imports: [
-    ConfigModule,
     ClientsModule.registerAsync([
       {
         name: 'SONG_SERVICE',
@@ -28,7 +29,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'; // Import ConfigSe
       },
     ]),
   ],
-  controllers: [PlaylistController],
-  providers: [PlaylistService],
+  controllers: [PlaylistController, PlaylistVer2Controller],
+  providers: [PlaylistService, PlaylistServiceVer2],
 })
 export class PlaylistModule {}

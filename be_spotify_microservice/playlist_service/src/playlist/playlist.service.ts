@@ -52,22 +52,24 @@ export class PlaylistService {
   }
 
   async findOne(id: number): Promise<PlaylistResponse> {
-    console.log('check id: ' + id);
     const playlistFound = await this.prismaService.playlists.findUnique({
       where: {
         id,
       },
     });
+    console.log('Check find one', playlistFound);
 
     let dataResponse: PlaylistResponse;
     const songIds = playlistFound.songs as number[];
+    delete playlistFound.songs;
 
     // call service playlistsong
     if (songIds.length > 0) {
       const listSong = await lastValueFrom<Record<number, SongDto>>(
         this.songService.send('getListSong', songIds),
       );
-      delete playlistFound.songs;
+      console.log('check listSong', listSong);
+
       dataResponse = {
         ...playlistFound,
         songs: songIds.map((songId) => listSong[songId]), // Đóng ngoặc đúng cách

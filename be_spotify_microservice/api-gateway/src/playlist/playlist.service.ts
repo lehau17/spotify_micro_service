@@ -8,6 +8,7 @@ import { PagingDto } from 'src/common/paging/paging.dto';
 
 @Injectable()
 export class PlaylistService {
+  private readonly topic: string = 'findOneVer2';
   constructor(
     @Inject('PLAYLIST_SERVICE') private readonly playlistService: ClientProxy,
   ) {}
@@ -30,7 +31,7 @@ export class PlaylistService {
   findOne(id: number) {
     return lastValueFrom(
       this.playlistService
-        .send('findOnePlaylist', id)
+        .send(this.topic, id)
         .pipe(handleRetryWithBackoff(3, 1000)),
     );
   }
