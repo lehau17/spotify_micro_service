@@ -51,37 +51,13 @@ export class PlaylistService {
     return this.prismaService.playlists.findMany(options);
   }
 
-  async findOne(id: number): Promise<PlaylistResponse> {
+  async findOne(id: number): Promise<playlists> {
     const playlistFound = await this.prismaService.playlists.findUnique({
       where: {
         id,
       },
     });
-    console.log('Check find one', playlistFound);
-
-    let dataResponse: PlaylistResponse;
-    const songIds = playlistFound.songs as number[];
-    delete playlistFound.songs;
-
-    // call service playlistsong
-    if (songIds.length > 0) {
-      const listSong = await lastValueFrom<SongDto[]>(
-        this.songService.send('getListSongReturnArray', songIds),
-      );
-
-      dataResponse = {
-        ...playlistFound,
-        songs: listSong,
-      };
-    } else {
-      dataResponse = {
-        ...playlistFound,
-        songs: [],
-      };
-    }
-    console.log('Check data response', dataResponse);
-
-    return dataResponse;
+    return playlistFound;
   }
 
   async addSongToPlaylist({

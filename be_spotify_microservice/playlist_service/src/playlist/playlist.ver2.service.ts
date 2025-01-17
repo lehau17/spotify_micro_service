@@ -4,6 +4,7 @@ import { PlaylistResponse } from './dto/playlist-response.dto';
 import { lastValueFrom } from 'rxjs';
 import { SongDto } from './dto/create-playlist.dto';
 import { ClientProxy } from '@nestjs/microservices';
+import { playlists } from '@prisma/client';
 
 @Injectable()
 class PlaylistServiceVer2 {
@@ -12,34 +13,14 @@ class PlaylistServiceVer2 {
     @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
   ) {}
 
-  async findOne(id: number): Promise<PlaylistResponse> {
+  async findOne(id: number): Promise<playlists> {
     const playlistFound = await this.prismaService.playlists.findUnique({
       where: {
         id,
       },
     });
 
-    let dataResponse: PlaylistResponse;
-    const songIds = playlistFound.songs as number[];
-    delete playlistFound.songs;
-
-    // call service playlistsong
-    if (songIds.length > 0) {
-      const listSong = await lastValueFrom<SongDto[]>(
-        this.songService.send('getListSongReturnArray', songIds),
-      );
-
-      dataResponse = {
-        ...playlistFound,
-        songs: listSong,
-      };
-    } else {
-      dataResponse = {
-        ...playlistFound,
-        songs: [],
-      };
-    }
-    return dataResponse;
+    return playlistFound;
   }
 }
 
