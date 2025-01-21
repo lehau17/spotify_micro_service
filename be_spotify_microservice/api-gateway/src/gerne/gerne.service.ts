@@ -31,7 +31,7 @@ export class GerneService {
   findOne(id: number) {
     return lastValueFrom(
       this.gerneService
-        .send('findOneGerne', id)
+        .send('findOneGenre', id)
         .pipe(handleRetryWithBackoff(3, 1000)),
     );
   }

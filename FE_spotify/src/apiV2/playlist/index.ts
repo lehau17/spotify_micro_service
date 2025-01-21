@@ -1,6 +1,10 @@
 import api from "@/apis/apiUtil";
 import { PagingDto } from "@/types/ver2/paging.type";
-import { CreatePlaylistDto, PlayListDto } from "@/types/ver2/playlist.type";
+import {
+  CreatePlaylistDto,
+  PlayListDetailDto,
+  PlayListDto,
+} from "@/types/ver2/playlist.type";
 import SuccessResponse from "@/types/ver2/response.type";
 
 const playListApi = {
@@ -11,6 +15,9 @@ const playListApi = {
   },
   createPlaylist: (payload: CreatePlaylistDto) => {
     return api.post<SuccessResponse<PlayListDto>>("playlist", payload);
+  },
+  getDetail: (id: number) => {
+    return api.get<SuccessResponse<PlayListDetailDto>>(`playlist/${id}`);
   },
 };
 

@@ -19,9 +19,14 @@ export class GerneController {
     return this.gerneService.findAll(paging);
   }
 
+  @MessagePattern('findRecordGenre')
+  findRecordGenre(@Payload() paging: number[]) {
+    return this.gerneService.findByids(paging);
+  }
+
   @MessagePattern('findOneGenre')
   findOne(@Payload() id: number) {
-    return this.gerneService.findOne(id);
+    return this.gerneService.findOneWithSongs(id);
   }
 
   @MessagePattern('updateGerne')

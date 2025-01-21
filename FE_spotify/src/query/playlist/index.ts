@@ -22,3 +22,10 @@ export const useCreatePlaylistMutation = () => {
     },
   });
 };
+
+export const useGetDetailPlaylistQuery = (id: number) => {
+  return useQuery({
+    queryKey: ["get-playlist-of", id],
+    queryFn: () => playListApi.getDetail(id),
+  });
+};

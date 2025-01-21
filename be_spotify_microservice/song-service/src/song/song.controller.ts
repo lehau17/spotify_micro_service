@@ -73,4 +73,9 @@ export class SongController {
   remove(@Payload() { id, user_id }: { id: number; user_id: number }) {
     return this.songService.remove(id, user_id);
   }
+
+  @MessagePattern('getSongByGenreId')
+  getSongByGenreId(@Payload() { id, ...paging }: { id: number } & PagingDto) {
+    return this.songService.getSongByGenreId(id, paging);
+  }
 }

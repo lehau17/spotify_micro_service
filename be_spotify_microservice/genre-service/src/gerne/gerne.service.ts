@@ -1,14 +1,18 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateGerneDto } from './dto/create-gerne.dto';
 import { UpdateGerneDto } from './dto/update-gerne.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { RpcException } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { PagingDto } from 'src/common/paging/paging.dto';
-import { Prisma, Status } from '@prisma/client';
+import { Genre, Prisma, Status } from '@prisma/client';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class GerneService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
+  ) {}
   async create({ nameGenre }: CreateGerneDto) {
     //check unique
     const foundGerne = await this.prismaService.genre.findFirst({
@@ -54,6 +58,38 @@ export class GerneService {
         id,
       },
     });
+  }
+
+  async findOneWithSongs(id: number) {
+    const foundGenre = await this.findOne(id);
+    if (!foundGenre || foundGenre.status !== 'Enable') {
+      throw new RpcException({
+        message: 'Not found Genre',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    const listSong = await lastValueFrom(
+      this.songService.send('getSongByGenreId', { id }),
+    );
+    return {
+      ...foundGenre,
+      songs: listSong,
+    };
+  }
+
+  async findByids(ids: number[]): Promise<Record<number, Genre>> {
+    const listGenre = await this.prismaService.genre.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+    let recordGenrn: Record<number, Genre>;
+    listGenre.forEach((e) => {
+      recordGenrn[e.id] = e;
+    });
+    return recordGenrn;
   }
 
   async update({ id, nameGenre }: UpdateGerneDto) {

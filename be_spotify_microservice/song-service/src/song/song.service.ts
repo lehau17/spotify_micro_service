@@ -153,6 +153,12 @@ export class SongService {
       },
     });
 
+    const genreIds = foundSongs.map((song) => {
+      return song.genre_id;
+    });
+
+    // get genre
+
     return foundSongs;
   }
 
@@ -346,5 +352,28 @@ export class SongService {
         status: Status.Disable,
       },
     });
+  }
+
+  /**
+   * GET SONG BY GERNE
+   */
+  async getSongByGenreId(
+    id: number,
+    { cursor = null, limit = 60, page = 1 }: PagingDto,
+  ): Promise<Song[]> {
+    const options: Prisma.SongFindManyArgs = {
+      take: +limit,
+      skip: cursor ? 1 : (+page - 1) * limit,
+      cursor: cursor
+        ? {
+            id: +cursor,
+          }
+        : undefined,
+      where: {
+        status: 'Enable',
+        genre_id: id,
+      },
+    };
+    return this.prismaService.song.findMany(options);
   }
 }

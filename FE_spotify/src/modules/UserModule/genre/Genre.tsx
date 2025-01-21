@@ -1,27 +1,19 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import "./genre.css";
-import { useAppSelector } from "../../../redux/hooks";
-import { AppDispatch } from "../../../redux/store";
-import { fetchAndSetSongGenre } from "../../../apis/apiGetSongGenre";
-import { TypeGenre } from "../../../types/typeGenre";
+
 import { useNavigate } from "react-router-dom";
+import { useGetGenreQuery } from "@/query/genre";
+import { GenreDto } from "@/types/ver2/genre.type";
 
 export default function Genre() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { songGenre } = useAppSelector((state) => state.song);
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    dispatch(fetchAndSetSongGenre());
-  }, [dispatch]);
+  const navigate = useNavigate();
+  const { data } = useGetGenreQuery({ limit: 60, page: 1 });
 
   const renderGenre = () => {
-    return songGenre?.map((genre: TypeGenre, index: number) => (
+    return data?.data?.data.map((genre: GenreDto, index: number) => (
       <div
-        key={genre.genreId}
+        key={genre.id}
         className={`genre-box color-${index % 10}`}
-        onClick={() => navigate(`/genre/${genre.genreId}`)}
+        onClick={() => navigate(`/genre/${genre.id}`)}
       >
         {genre.nameGenre}
       </div>
@@ -31,71 +23,7 @@ export default function Genre() {
   return (
     <div className="genre-page">
       <h1 className="genre-title">Genres All</h1>
-      <div className="genre-grid">
-        {/* {renderGenre()} */}
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${0 % 10}`}
-        >
-          {'Rock'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${1 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${2 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${3 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${4 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${5 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${6 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${7 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-        <div
-          // key={genre.genreId}
-          className={`genre-box color-${8 % 10}`}
-
-        >
-          {'Pop'}
-        </div>
-      </div>
+      <div className="genre-grid">{renderGenre()}</div>
     </div>
   );
 }

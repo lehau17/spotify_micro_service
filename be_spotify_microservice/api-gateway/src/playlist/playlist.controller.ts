@@ -16,6 +16,7 @@ import { TokenPayload } from 'src/common/types/jwt.type';
 import { PagingDto } from 'src/common/paging/paging.dto';
 import { ApiProperty, ApiQuery, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AddSongDto } from './dto/add-song.dto';
+import { AddRemovePlaylistDto } from './dto/add_remove_song.dto';
 
 @Controller('playlist')
 @ApiBearerAuth('access_token')
@@ -107,7 +108,7 @@ export class PlaylistController {
   @ApiProperty({ description: 'song id', required: true, example: 1 })
   removeSongToPlayList(
     @Param('id') id: string,
-    @Body() song_id: number,
+    @Body() { song_id }: AddRemovePlaylistDto,
     @Req() req: Express.Request,
   ) {
     const { id: user_id } = req.user as TokenPayload;

@@ -63,7 +63,6 @@ export class PlaylistService {
         playlistFound.songs as Number[],
       ),
     );
-    console.log('Check ', song_details);
     return {
       ...playlistFound,
       song_details,
@@ -129,32 +128,32 @@ export class PlaylistService {
     const playlists = await this.prismaService.playlists.findFirst({
       where: {
         id: playlist_id,
-        songs: {
-          path: ['$[*].id'],
-          equals: song_id, // Số cần tìm
-        },
       },
     });
     if (!playlists) {
       throw new RpcException({
-        message: 'No playlist',
+        message: 'No playlist found ',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
+    const songsIds = playlists.songs as number[];
     if (playlists.user_id !== user_id) {
       throw new RpcException({
         message: 'forbidden ',
         statusCode: HttpStatus.FORBIDDEN,
       });
     }
-    // remove song
-    const oldSong: SongDto[] = JSON.parse(playlists.songs as string);
-    const newSong = oldSong.filter((song) => song.id !== song_id);
+    if (!songsIds.includes(song_id)) {
+      throw new RpcException({
+        message: 'no song in playlist ',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
 
     return this.prismaService.playlists.update({
       where: { id: playlist_id },
       data: {
-        songs: newSong,
+        songs: songsIds.filter((s) => s !== song_id),
       },
     });
   }

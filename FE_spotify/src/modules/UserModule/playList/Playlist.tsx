@@ -41,7 +41,8 @@ import "./Playlist.css";
 import { addSongToPlaylist } from "../../../apis/apiPlayList/apiAddSongToPlaylist";
 import { editPlaylist } from "../../../apis/apiPlayList/apiEditPlaylist";
 import { deletePlaylist } from "../../../apis/apiPlayList/apiDeletePlaylist";
-import { useCreatePlaylistMutation } from "@/query/playlist";
+import { useGetDetailPlaylistQuery } from "@/query/playlist";
+import { SongDto } from "@/types/ver2/song.response";
 
 const { Title, Text } = Typography;
 
@@ -54,6 +55,9 @@ const PlaylistComponent = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
+  const { data: dataResponse } = useGetDetailPlaylistQuery(Number(id));
+  const dataPlaylist = dataResponse?.data.data;
+  // console.log("Check dataPlaylist", dataPlaylist);
   const [users, setUsers] = useState<TypeUser[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -69,19 +73,12 @@ const PlaylistComponent = () => {
   };
 
   useEffect(() => {
-    if (!localStorage.getItem("user")) {
-      navigate("/");
-    }
-    callApiGetUser();
-  }, []);
-
-  useEffect(() => {
     dispatch(getPlaylistById(id));
     dispatch(fetchAndSetAllSongs());
     dispatch(fetchAndSetSongGenre());
     setIsVisible(true);
     setSearchQuery("");
-  }, [id, dispatch]);
+  }, [id]);
 
   useEffect(() => {
     if (isModalVisible && playListDetailById) {
@@ -148,10 +145,7 @@ const PlaylistComponent = () => {
   const handlePlayPlaylist = () => {
     const allIds = playListDetailById.PlaylistSongs?.map((song) => song.songId); // Lấy tất cả các id
     if (allIds && allIds.length > 0) {
-      // setSongQueue(allIds);
-      // setCurrentPlayingSongId(allIds[0]);
       setIdMusic(String(allIds[0]));
-      // funcSongEndProps(handleSongEnd)
     }
   };
 
@@ -210,10 +204,10 @@ const PlaylistComponent = () => {
             <img
               src={record.image}
               alt={record.title}
-              style={{ width: "65px", height: "50px" }}
+              style={{ width: "50px", height: "50px" }}
             />
 
-            <div className="pl-5">
+            <div className="pl-5 flex items-center">
               <div>{record.title}</div>
               <div style={{ fontSize: "14px", color: "gray" }}>
                 <Link
@@ -293,68 +287,66 @@ const PlaylistComponent = () => {
   }));
 
   const playlistData =
-    playListDetailById.PlaylistSongs?.map(
-      (playlistSong: PlaylistSong, index: number) => {
-        const isPlaying = playlistSong.Song.songId === currentPlayingSongId;
-        const rowClassName = isPlaying
-          ? "custom-row playing"
-          : "custom-row not-playing";
-        return {
-          key: index + 1,
-          id: playlistSong.Song.songId,
-          number: isPlaying ? (
-            <PlayCircleOutlined className="text-green-500 text-lg" />
-          ) : (
-            index + 1
-          ),
-          title: playlistSong.Song.songName,
-          genre: playlistSong.Song.genreId,
-          addedDate: playlistSong.Song.publicDate,
-          duration: playlistSong.Song.duration,
-          image: playlistSong.Song.songImage,
-          artist: playlistSong.Song.userId,
-          onclick: () => handlePlayMusic(playlistSong.Song.songId),
-          action: (
-            <Dropdown
-              overlay={
-                <Menu>
-                  <Menu.Item key="1">
-                    <Button
-                      type="link"
-                      icon={<UserOutlined />}
-                      className="text-gray-500"
-                    >
-                      <Link to={`/detail-artists/${playlistSong.Song.userId}`}>
-                        Chuyển tới nghệ sĩ
-                      </Link>
-                    </Button>
-                  </Menu.Item>
-                  <Menu.Item key="2">
-                    <Button
-                      type="link"
-                      icon={<DeleteOutlined />}
-                      className="text-gray-500"
-                      onClick={() => {
-                        handleDeleteFromPlaylist(playlistSong.Song.songId);
-                      }}
-                    >
-                      Xóa khỏi playlist
-                    </Button>
-                  </Menu.Item>
-                </Menu>
-              }
-              trigger={["click"]}
-              placement="bottomRight"
-            >
-              <Button type="link" className="text-white">
-                ...
-              </Button>
-            </Dropdown>
-          ),
-          className: rowClassName,
-        };
-      }
-    ) || [];
+    dataPlaylist?.song_details?.map((playlistSong: SongDto, index: number) => {
+      const isPlaying = playlistSong.id === currentPlayingSongId;
+      const rowClassName = isPlaying
+        ? "custom-row playing"
+        : "custom-row not-playing";
+      return {
+        key: index + 1,
+        id: playlistSong.id,
+        number: isPlaying ? (
+          <PlayCircleOutlined className="text-green-500 text-lg" />
+        ) : (
+          index + 1
+        ),
+        title: playlistSong.song_name,
+        genre: playlistSong.genre_id,
+        addedDate: playlistSong.public_date,
+        duration: playlistSong.duration,
+        image: playlistSong.song_image,
+        artist: playlistSong.user_id,
+        onclick: () => handlePlayMusic(playlistSong.id),
+        action: (
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item key="1">
+                  <Button
+                    type="link"
+                    icon={<UserOutlined />}
+                    className="text-gray-500"
+                  >
+                    <Link to={`/detail-artists/${playlistSong.user_id}`}>
+                      Chuyển tới nghệ sĩ
+                    </Link>
+                  </Button>
+                </Menu.Item>
+                <Menu.Item key="2">
+                  <Button
+                    type="link"
+                    icon={<DeleteOutlined />}
+                    className="text-gray-500"
+                    onClick={() => {
+                      handleDeleteFromPlaylist(playlistSong.id);
+                    }}
+                  >
+                    Xóa khỏi playlist
+                  </Button>
+                </Menu.Item>
+              </Menu>
+            }
+            trigger={["click"]}
+            placement="bottomRight"
+          >
+            <Button type="link" className="text-white">
+              ...
+            </Button>
+          </Dropdown>
+        ),
+        className: rowClassName,
+      };
+    }) || [];
 
   // filter search
   const filteredData = data.filter(
@@ -402,7 +394,7 @@ const PlaylistComponent = () => {
           <Avatar
             shape="square"
             size={200}
-            src={playListDetailById.imagePath}
+            src={dataPlaylist?.image_path}
             alt="Playlist cover"
           />
         </Col>
@@ -410,10 +402,10 @@ const PlaylistComponent = () => {
           <Space direction="vertical">
             <Text type="secondary">Playlist</Text>
             <Title style={{ color: "white", margin: 0 }}>
-              {playListDetailById.playlistName}
+              {dataPlaylist?.playlist_name}
             </Title>
             <Text style={{ color: "white", fontSize: "16px" }}>
-              {user?.name} • {playListDetailById.PlaylistSongs?.length} bài hát,
+              {user?.name} • {dataPlaylist?.songs?.length} bài hát,
               {formattedDuration}
             </Text>
           </Space>
@@ -444,24 +436,23 @@ const PlaylistComponent = () => {
         </Col>
       </Row>
 
-      {playListDetailById.PlaylistSongs &&
-        playListDetailById.PlaylistSongs.length > 0 && (
-          <Table
-            pagination={false}
-            columns={columns}
-            dataSource={playlistData}
-            style={{
-              marginTop: "20px",
-            }}
-            onRow={(record) => ({
-              onClick: () => {
-                handlePlayMusic(record.id);
-              },
-            })}
-            className="custom-transparent-table"
-            rowClassName={(record) => record.className}
-          />
-        )}
+      {dataPlaylist?.song_details && dataPlaylist?.song_details.length > 0 && (
+        <Table
+          pagination={false}
+          columns={columns}
+          dataSource={playlistData}
+          style={{
+            marginTop: "20px",
+          }}
+          onRow={(record) => ({
+            onClick: () => {
+              handlePlayMusic(record.id);
+            },
+          })}
+          className="custom-transparent-table"
+          rowClassName={(record) => record.className}
+        />
+      )}
 
       <div>
         {isVisible && (
