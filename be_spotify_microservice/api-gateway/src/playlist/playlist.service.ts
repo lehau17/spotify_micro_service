@@ -12,6 +12,7 @@ export class PlaylistService {
     @Inject('PLAYLIST_SERVICE') private readonly playlistService: ClientProxy,
   ) {}
   create(createPlaylistDto: CreatePlaylistDto, user_id: number) {
+    console.log('Checking playlist', createPlaylistDto, user_id);
     return lastValueFrom(
       this.playlistService
         .send('createPlaylist', { ...createPlaylistDto, user_id })

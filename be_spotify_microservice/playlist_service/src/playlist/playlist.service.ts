@@ -17,18 +17,9 @@ export class PlaylistService {
     song_ids,
     ...payload
   }: CreatePlaylistDto): Promise<playlists> {
-    const songs = await lastValueFrom<SongDto[]>(
-      this.songService.send('getListSong', song_ids),
-    );
-    if (songs.length !== song_ids.length) {
-      throw new RpcException({
-        message: 'bad request',
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
     return this.prismaService.playlists.create({
       data: {
-        songs: songs,
+        songs: song_ids,
         ...payload,
       },
     });

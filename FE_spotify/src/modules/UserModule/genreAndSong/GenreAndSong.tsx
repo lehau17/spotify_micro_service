@@ -96,7 +96,7 @@ export default function GenreAndSong() {
   return (
     <div>
       <div className="text-[40px] text-white font-bold h-[150px]  bg-green-600  px-5 py-2 rounded w-full flex items-center">
-        {data ? data.data.data.nameGenre : ""} song
+        {data ? data.data.data.nameGenre : "song"}
       </div>
       <Table
         columns={columns}
