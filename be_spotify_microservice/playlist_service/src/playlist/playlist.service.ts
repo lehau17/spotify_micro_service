@@ -14,7 +14,7 @@ export class PlaylistService {
     @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
   ) {}
   async create({
-    song_ids,
+    song_ids = [],
     ...payload
   }: CreatePlaylistDto): Promise<playlists> {
     return this.prismaService.playlists.create({
