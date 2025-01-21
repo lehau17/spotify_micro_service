@@ -4,7 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetGenreQuery = ({ cursor, limit, page }: PagingDto) => {
   return useQuery({
-    queryKey: ["get-genre"],
+    queryKey: ["get-genre", cursor, limit, page],
     queryFn: () => genreApi.getGenre({ cursor, limit, page }),
+  });
+};
+
+export const useGetGenreByIdQuery = (id: number) => {
+  return useQuery({
+    queryKey: ["get-genre-by-id", id],
+    queryFn: () => genreApi.getGenreById(id),
   });
 };
