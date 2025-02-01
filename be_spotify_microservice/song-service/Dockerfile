@@ -1,5 +1,6 @@
 FROM node:20
 
+WORKDIR /app
 
 COPY package.json yarn.lock ./
 
@@ -11,7 +12,7 @@ COPY . .
 
 
 
-# RUN yarn config set network-timeout 600000
+RUN yarn config set network-timeout 600000
 
 RUN npx prisma db push
 RUN npx prisma generate
