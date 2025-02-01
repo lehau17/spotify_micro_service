@@ -49,13 +49,21 @@ export default function DetailArtists() {
     return totalViewer.toLocaleString("en-US");
   };
 
-  const handlerGetIdMusic = (id: any) => {
-    setIdMusic(id);
+  const handleIncView = (id: any) => {
     useIncreaseViewMutation.mutate(id, {
       onError: () => {
         toast.error("Lỗi tăng view");
       },
     });
+  };
+
+  const handlerGetIdMusic = (id: any) => {
+    setIdMusic(id);
+    // useIncreaseViewMutation.mutate(id, {
+    //   onError: () => {
+    //     toast.error("Lỗi tăng view");
+    //   },
+    // });
   };
 
   const renderTableSong = () => {
@@ -67,6 +75,7 @@ export default function DetailArtists() {
               className="mb-3"
               onClick={() => {
                 handlerGetIdMusic(itemSong.id);
+                handleIncView(itemSong.id);
               }}
             >
               <tr

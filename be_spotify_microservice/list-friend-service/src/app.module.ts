@@ -9,6 +9,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule.registerAsync([
       {
         name: 'USER_SERVICE',
@@ -32,7 +33,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
     ListFriendModule,
     PrismaModule,
-    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [ListFriendController],
   providers: [PrismaService, ListFriendService],

@@ -36,7 +36,6 @@ import { apiGetUser } from "../../../apis/apiGetUser";
 import { getPlaylistById } from "../../../apis/apiPlayList/apiGetPlaylistById";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGlobalContext } from "../../../globalContext/GlobalContext";
-import { PlaylistSong } from "../../../types/typePlaylist";
 import "./Playlist.css";
 import { addSongToPlaylist } from "../../../apis/apiPlayList/apiAddSongToPlaylist";
 import { editPlaylist } from "../../../apis/apiPlayList/apiEditPlaylist";
@@ -55,6 +54,7 @@ const PlaylistComponent = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
+
   const { data: dataResponse } = useGetDetailPlaylistQuery(Number(id));
   const dataPlaylist = dataResponse?.data.data;
   // console.log("Check dataPlaylist", dataPlaylist);

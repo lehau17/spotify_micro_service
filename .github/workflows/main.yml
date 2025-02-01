@@ -138,6 +138,11 @@ jobs:
             # notity-service
             echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./notify-service/.env
 
+            # list-friend-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./list-friend-service/.env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL_LIST_FRIEND_SERVICE }}" >> ./list-friend-service/.env
+
+
 
             cd ..
 
