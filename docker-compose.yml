@@ -70,6 +70,11 @@ services:
     build: ./be_spotify_microservice/upload-service
     networks:
       - node-network
+  list-friend-service:
+    container_name: list-friend-service
+    build: ./be_spotify_microservice/list-friend-service
+    networks:
+      - node-network
     # depends_on:
     #   - postgres
     # environment:

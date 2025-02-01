@@ -33,7 +33,7 @@ export default function Sidebar() {
   );
   const [currentId, setCurrentId] = useState<number>();
   const useCreatePlaylist = useCreatePlaylistMutation();
-  const { data: myPlayList } = useGetPlayListOfMeQuery({
+  const { data: myPlayList, refetch } = useGetPlayListOfMeQuery({
     page: 1,
     limit: 50,
   });
@@ -54,6 +54,7 @@ export default function Sidebar() {
 
     const result = await useCreatePlaylist.mutateAsync(newPlaylist);
     if (result) {
+      refetch();
       navigate(`/play-list/${result.data.data.id}`);
     } else {
     }
@@ -109,6 +110,7 @@ export default function Sidebar() {
                     onClick={() => {
                       handleCreatePlayList();
                     }}
+                    className="cursor-pointer"
                   >
                     Tạo danh sách phát mới
                   </DropdownMenuLabel>
@@ -167,65 +169,75 @@ export default function Sidebar() {
                       </Button>
                     </> // Hiển thị thông báo nếu danh sách trống
                   ) : (
-                    myPlayList?.data?.data.map((playlist) => (
-                      <li
-                        key={playlist.id}
-                        onClick={() => {
-                          navigate(`./play-list/${playlist.id}`);
-                          setCurrentId(playlist.id);
-                        }}
-                        className={`relative ${
-                          currentId === playlist.id
-                            ? "bg-opacity-10"
-                            : "bg-transparent"
-                        } 
+                    myPlayList?.data?.data.map((playlist, index) => {
+                      if (index > 2) return;
+                      return (
+                        <li
+                          key={playlist.id}
+                          onClick={() => {
+                            navigate(`./play-list/${playlist.id}`);
+                            setCurrentId(playlist.id);
+                          }}
+                          className={`relative ${
+                            currentId === playlist.id
+                              ? "bg-opacity-10"
+                              : "bg-transparent"
+                          } 
                             hover:bg-opacity-20 
                             hover:bg-gray-500 
                             transition-all duration-300 
                             py-1 px-2 
                             rounded-lg cursor-pointer`}
-                      >
-                        {/* Tạo lớp overlay khi hover */}
-                        <div className="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
+                        >
+                          {/* Tạo lớp overlay khi hover */}
+                          <div className="absolute inset-0 bg-black opacity-0 hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
 
-                        <Row align="middle" style={{ marginBottom: "10px" }}>
-                          <Col span={6}>
-                            <Avatar
-                              shape="square"
-                              size={45}
-                              src={playlist.image_path}
-                              alt="Playlist cover"
-                            />
-                          </Col>
-                          <Col span={18}>
-                            <Space direction="vertical">
-                              <Title
-                                style={{
-                                  color: "white",
-                                  margin: "0",
-                                  fontSize: "13px",
-                                  fontWeight: "bold",
-                                  lineHeight: "0.5",
-                                }}
-                              >
-                                {playlist.playlist_name}
-                              </Title>
-                              <Text
-                                style={{
-                                  color: "gray",
-                                  fontSize: "10px",
-                                  margin: "0",
-                                  lineHeight: "1",
-                                }}
-                              >
-                                Danh sách phát • {currentUser.user?.name}
-                              </Text>
-                            </Space>
-                          </Col>
-                        </Row>
-                      </li>
-                    ))
+                          <Row align="middle" style={{ marginBottom: "10px" }}>
+                            <Col span={6}>
+                              <Avatar
+                                shape="square"
+                                size={45}
+                                src={playlist.image_path}
+                                alt="Playlist cover"
+                              />
+                            </Col>
+                            <Col span={18}>
+                              <Space direction="vertical">
+                                <Title
+                                  style={{
+                                    color: "white",
+                                    margin: "0",
+                                    fontSize: "13px",
+                                    fontWeight: "bold",
+                                    lineHeight: "0.5",
+                                  }}
+                                >
+                                  {playlist.playlist_name}
+                                </Title>
+                                <Text
+                                  style={{
+                                    color: "gray",
+                                    fontSize: "10px",
+                                    margin: "0",
+                                    lineHeight: "1",
+                                  }}
+                                >
+                                  Danh sách phát • {currentUser.user?.name}
+                                </Text>
+                              </Space>
+                            </Col>
+                          </Row>
+                        </li>
+                      );
+                    })
                   )}
+                  <Button
+                    type="primary"
+                    className="btn-createPlaylist"
+                    onClick={handleCreatePlayList}
+                  >
+                    Create new playlist
+                  </Button>
                 </ul>
               </div>
             )}
