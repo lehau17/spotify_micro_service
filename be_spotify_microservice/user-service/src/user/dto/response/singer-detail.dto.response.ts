@@ -3,6 +3,7 @@ import { users } from '@prisma/client';
 export type DetailSingerResponseDto = users & {
   songs: SongDto[];
   isFollow: boolean;
+  statusFriendShip: string;
 };
 
 export type SongDto = {

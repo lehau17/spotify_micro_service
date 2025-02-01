@@ -47,6 +47,18 @@ import { CacheService } from 'src/cache/cache.service';
           persistent: false,
         },
       },
+      {
+        name: 'LISTFRIEND_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL],
+          queue: 'list_friend_queue',
+          queueOptions: {
+            durable: true,
+          },
+          persistent: false,
+        },
+      },
     ]),
   ],
   controllers: [UserController],

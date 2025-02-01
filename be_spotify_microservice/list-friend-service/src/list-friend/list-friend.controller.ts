@@ -15,6 +15,13 @@ export class ListFriendController {
     return this.listFriendService.sendFriendRequest(payload);
   }
 
+  @MessagePattern('getStatusFriend')
+  getStatusFriend(
+    @Payload() { user_id, friend_id }: { user_id: number; friend_id: number },
+  ) {
+    return this.listFriendService.getStatusFriend(user_id, friend_id);
+  }
+
   @MessagePattern('acceptFriendShip')
   acceptFriendShip(
     @Payload() payload: { id: number; receive_user_id: number },

@@ -12,7 +12,7 @@ import { RegisterDto } from './dto/register-user.dto';
 import { RegisterResponseDto } from './dto/response/register.response.dto';
 import Redis from 'ioredis';
 import { CacheService } from 'src/cache/cache.service';
-import { last, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import {
   DetailSingerResponseDto,
   SongDto,
@@ -29,6 +29,8 @@ export class UserService {
     @Inject('MAIL_SERVICE') private readonly mailService: ClientProxy,
     @Inject('SONG_SERVICE') private readonly songService: ClientProxy,
     @Inject('FOLLOWING_SERVICE') private readonly followerService: ClientProxy,
+    @Inject('LISTFRIEND_SERVICE')
+    private readonly listFriendService: ClientProxy,
   ) {
     this.redis = CacheService.getClient();
   }
@@ -67,7 +69,7 @@ export class UserService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    const [listSongByUser, checkFollower] = await Promise.all([
+    const [listSongByUser, checkFollower, status_friend] = await Promise.all([
       await lastValueFrom<SongDto[]>(
         this.songService.send('listSongByUser', id),
       ),
@@ -75,6 +77,12 @@ export class UserService {
         this.followerService.send('getFollower', {
           user_id,
           follower_user_id: foundSinger.id,
+        }),
+      ),
+      await lastValueFrom<{ status: string }>(
+        this.listFriendService.send('getStatusFriend', {
+          user_id,
+          friend_id: foundSinger.id,
         }),
       ),
     ]);
@@ -87,12 +95,14 @@ export class UserService {
       }
     }
     //
+
+    //check if friend
     return {
       ...foundSinger,
       songs: listSongByUser,
       isFollow,
+      statusFriendShip: status_friend.status || 'not available',
     };
-    //check if friend
   }
 
   async login({ username, password }: LoginDto): Promise<LoginResponse> {

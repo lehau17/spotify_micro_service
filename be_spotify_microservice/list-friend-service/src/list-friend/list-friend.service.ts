@@ -191,6 +191,28 @@ export class ListFriendService {
     });
   }
 
+  async getStatusFriend(
+    user_id: number,
+    friend_id: number,
+  ): Promise<{ status: string }> {
+    let result: { status: string } = {
+      status: 'not available',
+    };
+    result = await this.prismaService.listFriends.findFirst({
+      where: {
+        user_id,
+        friend_id,
+      },
+      select: {
+        status: true,
+      },
+    });
+    if (!result) {
+      result.status = 'not available';
+    }
+    return result;
+  }
+
   listFriend(
     user_id: number,
     { cursor, limit = 20, page = 1 }: PagingDto,
