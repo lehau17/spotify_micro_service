@@ -8,6 +8,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { PlaylistResponse } from './dto/playlist-response.dto';
 import _ from 'lodash';
+import { JsonArray } from '@prisma/client/runtime/library';
 @Injectable()
 export class PlaylistService {
   constructor(
@@ -97,7 +98,7 @@ export class PlaylistService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    const oldSong: number[] = JSON.parse(foundPlaylist.songs as string);
+    const oldSong: number[] = foundPlaylist.songs as number[];
     const newSong = [...oldSong, ...songs.map((e) => e.id)];
 
     return this.prismaService.playlists.update({
