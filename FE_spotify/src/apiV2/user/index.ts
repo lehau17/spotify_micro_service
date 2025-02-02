@@ -19,6 +19,9 @@ const userApi = {
       `/user/${id}/singer-detail`
     );
   },
+  myProfile: () => {
+    return api.get<SuccessResponse<UserResponseDto>>("user/me");
+  },
 };
 
 export default userApi;

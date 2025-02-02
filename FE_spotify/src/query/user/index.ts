@@ -8,3 +8,10 @@ export const useGetSingerQuery = ({ cursor, limit, page }: PagingDto) => {
     queryFn: () => userApi.getSinger({ cursor, limit, page }),
   });
 };
+
+export const useGetMyProfileQuery = () => {
+  return useQuery({
+    queryKey: ["get my profile"],
+    queryFn: () => userApi.myProfile(),
+  });
+};
