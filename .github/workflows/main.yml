@@ -142,7 +142,11 @@ jobs:
             echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./list-friend-service/.env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL_LIST_FRIEND_SERVICE }}" >> ./list-friend-service/.env
 
-
+            # search-service
+            echo "RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}" >> ./search-service/.env
+            echo "ELASTIC_NODE=${{ secrets.ELASTIC_NODE }}" >> ./search-service/.env
+            echo "ELASTIC_USER=${{ secrets.ELASTIC_USER }}" >> ./search-service/.env
+            echo "ELASTIC_PASS=${{ secrets.ELASTIC_PASS }}" >> ./search-service/.env
 
             cd ..
 

@@ -9,12 +9,13 @@ import SingerSearchService from './singer-search.service';
     ElasticsearchModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        node: configService.get('ELASTIC_NODE') || 'http://localhost:9200',
+        node:
+          configService.get<string>('ELASTIC_NODE') || 'http://localhost:9200',
         requestTimeout: 30000,
         maxRetries: 3,
         auth: {
-          username: configService.get('ELASTIC_USER') || 'elastic',
-          password: configService.get('ELASTIC_PASS') || '3881016Hau',
+          username: configService.get<string>('ELASTIC_USER') || 'elastic',
+          password: configService.get<string>('ELASTIC_PASS') || '3881016Hau',
         },
         tls: {
           rejectUnauthorized: false,
