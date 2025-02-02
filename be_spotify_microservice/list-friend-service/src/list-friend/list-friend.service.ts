@@ -198,7 +198,7 @@ export class ListFriendService {
     let result: { status: string } = {
       status: 'not available',
     };
-    result = await this.prismaService.listFriends.findFirst({
+    const foundFriendShip = await this.prismaService.listFriends.findFirst({
       where: {
         user_id,
         friend_id,
@@ -207,8 +207,9 @@ export class ListFriendService {
         status: true,
       },
     });
-    if (!result) {
-      result.status = 'not available';
+
+    if (foundFriendShip) {
+      result.status = foundFriendShip.status;
     }
     return result;
   }

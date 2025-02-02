@@ -12,14 +12,11 @@ import { useToggleFollowingMutation } from "@/query/follower";
 import { useModal } from "@/globalContext/ModalContext";
 
 export default function DetailArtists() {
-  // const { currentUser } = useAppSelector((state) => state.currentUser)
-  // const { userId } = currentUser?.user
   const { id } = useParams();
   const { openModal } = useModal();
 
   const { setIdMusic } = useGlobalContext();
 
-  const [isFriend, setIsFriend] = useState(false);
   const [dataDetail, setDataDetail] = useState<DetailSingerResponseDto>();
 
   const { data, isError, error, refetch } = useGetSingerDetailQuery(Number(id));
@@ -66,6 +63,43 @@ export default function DetailArtists() {
     // });
   };
 
+  const renderButtonFriendShip = () => {
+    if (dataDetail?.statusFriendShip === "enable") {
+      return (
+        <Button
+          type="link"
+          icon={<UserOutlined />} // biểu tượng cho "isFriend"
+          className="text-white bg-green-600 mt-3 ml-5 hover:bg-green-700 hover:font-semibold hover:text-white"
+          onClick={() => {}} // Hủy kết bạn
+        >
+          Hủy kết bạn
+        </Button>
+      );
+    } else if (dataDetail?.statusFriendShip === "ispending") {
+      return (
+        <Button
+          type="link"
+          icon={<UserAddOutlined />} // biểu tượng cho "Thêm bạn bè"
+          className="text-white bg-green-600 mt-3 ml-5"
+          onClick={() => {}} // Thêm bạn bè
+        >
+          Thu Hồi Lời Mời
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          type="link"
+          icon={<UserAddOutlined />} // biểu tượng cho "Thêm bạn bè"
+          className="text-white bg-green-600 mt-3 ml-5"
+          onClick={() => {}} // Thêm bạn bè
+        >
+          Thêm bạn bè
+        </Button>
+      );
+    }
+  };
+
   const renderTableSong = () => {
     if (dataDetail?.songs) {
       return dataDetail?.songs.map((itemSong, index) => {
@@ -105,13 +139,6 @@ export default function DetailArtists() {
     }
   };
 
-  useEffect(() => {
-    // callApiDetailUser();
-    // callApiGetSong();
-    // apiCheckFollow();
-    // callApiGetFriend();
-  }, [id]);
-
   return (
     <section className="detail-artists h-100">
       <div className="banner-artists">
@@ -137,28 +164,7 @@ export default function DetailArtists() {
               {dataDetail?.isFollow ? "Unfollow" : "Follow"}
             </button>
           </button>
-          {isFriend ? (
-            <Button
-              type="link"
-              icon={<UserOutlined />} // biểu tượng cho "isFriend"
-              className="text-white bg-green-600 mt-3 ml-5 hover:bg-green-700 hover:font-semibold hover:text-white"
-              onClick={
-                () => {}
-                // handleRemoveFriend(id)
-              } // Hủy kết bạn
-            >
-              Hủy kết bạn
-            </Button>
-          ) : (
-            <Button
-              type="link"
-              icon={<UserAddOutlined />} // biểu tượng cho "Thêm bạn bè"
-              className="text-white bg-green-600 mt-3 ml-5"
-              onClick={() => {}} // Thêm bạn bè
-            >
-              Thêm bạn bè
-            </Button>
-          )}
+          {renderButtonFriendShip()}
         </div>
         <div className="list-song">
           <h1 className="tittle-list-song mb-3 text-white">
