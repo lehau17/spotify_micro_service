@@ -13,6 +13,8 @@ import { AccessTokenGuard } from './common/guards/accessToken.guard';
 import { PrivateThrottlerGuard } from './common/guards/private.rate_limiter.guard';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
+import { BlackListGuard } from './common/guards/blacklist.guard';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   //logger
@@ -88,6 +90,7 @@ async function bootstrap() {
       redisStore,
       reflector,
     ),
+    new BlackListGuard(new ConfigService()),
   );
 
   const swagger = new DocumentBuilder()
