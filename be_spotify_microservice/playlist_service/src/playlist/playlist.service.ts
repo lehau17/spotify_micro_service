@@ -83,13 +83,13 @@ export class PlaylistService {
     }
     if (foundPlaylist.user_id !== user_id) {
       throw new RpcException({
-        message: 'forbidden ',
+        message: 'forbidden',
         statusCode: HttpStatus.FORBIDDEN,
       });
     }
     // newListStrong
     const songs = await lastValueFrom<SongDto[]>(
-      this.songService.send('getListSong', song_ids),
+      this.songService.send('getListSongReturnArray', song_ids),
     );
     if (songs.length !== song_ids.length) {
       throw new RpcException({
