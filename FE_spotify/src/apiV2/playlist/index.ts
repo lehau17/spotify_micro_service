@@ -19,6 +19,18 @@ const playListApi = {
   getDetail: (id: number) => {
     return api.get<SuccessResponse<PlayListDetailDto>>(`playlist/${id}`);
   },
+  addSongToPlaylist: ({
+    songIds,
+    playListId,
+  }: {
+    songIds: number[];
+    playListId: number;
+  }) => {
+    return api.patch<SuccessResponse<PlayListDto>>(
+      `playlist/${playListId}/add-songs`,
+      { song_ids: songIds }
+    );
+  },
 };
 
 export default playListApi;

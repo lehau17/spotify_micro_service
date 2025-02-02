@@ -11,7 +11,7 @@ import SingerSearchService from './singer-search.service';
       useFactory: async (configService: ConfigService) => ({
         node:
           configService.get<string>('ELASTIC_NODE') || 'http://localhost:9200',
-        requestTimeout: 30000,
+        requestTimeout: 300000,
         maxRetries: 3,
         auth: {
           username: configService.get<string>('ELASTIC_USER') || 'elastic',

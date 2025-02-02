@@ -1,3 +1,4 @@
+import { addSongToPlaylist } from "./../../apis/apiPlayList/apiAddSongToPlaylist";
 import playListApi from "@/apiV2/playlist";
 import { PagingDto } from "@/types/ver2/paging.type";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -27,5 +28,11 @@ export const useGetDetailPlaylistQuery = (id: number) => {
   return useQuery({
     queryKey: ["get-playlist-of", id],
     queryFn: () => playListApi.getDetail(id),
+  });
+};
+
+export const useAddSongToPlayListMutation = () => {
+  return useMutation({
+    mutationFn: playListApi.addSongToPlaylist,
   });
 };

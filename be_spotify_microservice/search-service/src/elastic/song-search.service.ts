@@ -33,6 +33,7 @@ export default class SongSearchService implements OnModuleInit {
               multi_match: {
                 query: text,
                 fields: ['song_name', 'description'],
+                operator: 'or',
                 type: 'best_fields',
               },
             },

@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreatePlaylistDto, SongDto } from './dto/create-playlist.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -92,12 +93,12 @@ export class PlaylistService {
     );
     if (songs.length !== song_ids.length) {
       throw new RpcException({
-        message: 'bad request',
+        message: 'Lenght of songs found not equal to length of song_ids',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    const oldSong: SongDto[] = JSON.parse(foundPlaylist.songs as string);
-    const newSong = [...oldSong, ...songs];
+    const oldSong: number[] = JSON.parse(foundPlaylist.songs as string);
+    const newSong = [...oldSong, ...songs.map((e) => e.id)];
 
     return this.prismaService.playlists.update({
       where: { id },

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { debounce } from "lodash";
 import {
   Table,
   Avatar,
@@ -40,8 +41,12 @@ import "./Playlist.css";
 import { addSongToPlaylist } from "../../../apis/apiPlayList/apiAddSongToPlaylist";
 import { editPlaylist } from "../../../apis/apiPlayList/apiEditPlaylist";
 import { deletePlaylist } from "../../../apis/apiPlayList/apiDeletePlaylist";
-import { useGetDetailPlaylistQuery } from "@/query/playlist";
+import {
+  useAddSongToPlayListMutation,
+  useGetDetailPlaylistQuery,
+} from "@/query/playlist";
 import { SongDto } from "@/types/ver2/song.response";
+import { useSearchSongQuery } from "@/query/search";
 
 const { Title, Text } = Typography;
 
@@ -55,22 +60,20 @@ const PlaylistComponent = () => {
 
   const { id } = useParams();
 
-  const { data: dataResponse } = useGetDetailPlaylistQuery(Number(id));
+  const { data: dataResponse, refetch: refetchPLaylist } =
+    useGetDetailPlaylistQuery(Number(id));
   const dataPlaylist = dataResponse?.data.data;
   // console.log("Check dataPlaylist", dataPlaylist);
-  const [users, setUsers] = useState<TypeUser[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { refetch, data: dataSearchSong } = useSearchSongQuery({
+    text: searchQuery,
+  });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { setIdMusic } = useGlobalContext();
   const [isVisible, setIsVisible] = useState(true);
   const [currentPlayingSongId, setCurrentPlayingSongId] = useState<
     number | null
   >(null);
-  // const [songQueue, setSongQueue] = useState<number[]>([]);
-  const callApiGetUser = async () => {
-    const result = await apiGetUser();
-    setUsers(Array.isArray(result) ? result : [result]);
-  };
 
   useEffect(() => {
     dispatch(getPlaylistById(id));
@@ -113,13 +116,14 @@ const PlaylistComponent = () => {
   const handleSearch = (event: any) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
+  const useAddSongToPlaylistMutation = useAddSongToPlayListMutation();
 
-  const handleAddSongToPlayist = (songId: number, playlistId: number) => {
-    const songAdd = {
-      playlistId,
-      songId,
-    };
-    dispatch(addSongToPlaylist(songAdd));
+  const handleAddSongToPlayist = (songId: number) => {
+    useAddSongToPlaylistMutation.mutateAsync({
+      songIds: [songId],
+      playListId: Number(id),
+    });
+    refetchPLaylist();
   };
 
   const handleDeleteFromPlaylist = (songId: number) => {
@@ -166,6 +170,19 @@ const PlaylistComponent = () => {
   // );
 
   // console.log(currentSong);
+  const debouncedSearch = debounce(() => {
+    // Gọi API tìm kiếm ở đây
+    refetch();
+  }, 500); // 500ms delay
+
+  // Sử dụng useEffect để gọi debouncedSearch khi searchQuery thay đổi
+  useEffect(() => {
+    if (searchQuery) {
+      debouncedSearch();
+    }
+    // Cleanup debounce khi component unmount
+    return () => debouncedSearch.cancel();
+  }, [searchQuery]);
 
   const menu = (
     <Menu onClick={handleMenuClick} style={{ backgroundColor: "#3f3f3f" }}>
@@ -194,27 +211,27 @@ const PlaylistComponent = () => {
       dataIndex: "title",
       key: "title",
       width: "40%",
-      render: (_: any, record: any) => {
-        const artist = users.find(
-          (user: TypeUser) => user.userId === record.artist
-        );
+      render: (_: any, record: SongDto) => {
+        // const artist = users.find(
+        //   (user: TypeUser) => user.userId === record.artist
+        // );
 
         return (
           <div className="flex">
             <img
-              src={record.image}
-              alt={record.title}
+              src={record.song_image}
+              alt={record.song_name}
               style={{ width: "50px", height: "50px" }}
             />
 
             <div className="pl-5 flex items-center">
-              <div>{record.title}</div>
+              <div>{record.song_name}</div>
               <div style={{ fontSize: "14px", color: "gray" }}>
                 <Link
-                  to={`/detail-artists/${artist?.userId}`}
+                  to={`/detail-artists/${record.user_id}`}
                   className="hover:text-green-500"
                 >
-                  {artist ? artist.name : ""}
+                  Nghệ sĩ
                 </Link>
               </div>
             </div>
@@ -226,9 +243,9 @@ const PlaylistComponent = () => {
       title: "Thể loại",
       dataIndex: "genre",
       key: "genre",
-      render: (_: any, record: any) => {
+      render: (_: any, record: SongDto) => {
         const genreItem = songGenre.find(
-          (genre: TypeGenre) => genre.genreId == record.genre
+          (genre: TypeGenre) => genre.genreId == record.genre_id
         ) as TypeGenre | undefined;
         return genreItem ? genreItem.nameGenre : "Unknown";
       },
@@ -238,8 +255,8 @@ const PlaylistComponent = () => {
       title: "Ngày thêm",
       dataIndex: "addedDate",
       key: "addedDate",
-      render: (_: any, record: any) => {
-        const formattedDate = moment(record.date).format("DD/MM/YYYY");
+      render: (_: any, record: SongDto) => {
+        const formattedDate = moment(record.public_date).format("DD/MM/YYYY");
         return <span>{formattedDate}</span>;
       },
       width: "15%",
@@ -254,37 +271,21 @@ const PlaylistComponent = () => {
       dataIndex: "action",
       key: "action",
       width: "10%",
+      render: (_: any, record: SongDto) => {
+        return (
+          <button
+            className="hover:text-blue-300"
+            onClick={() => {
+              console.log(record.id);
+              handleAddSongToPlayist(record.id);
+            }}
+          >
+            Add
+          </button>
+        );
+      },
     },
   ];
-
-  const existingSongIds = playListDetailById?.PlaylistSongs?.map(
-    (playlistSong) => playlistSong.songId
-  );
-  const filteredSongs = songLists.filter(
-    (song: TypeSong) => !existingSongIds?.includes(song.songId)
-  );
-
-  const data = filteredSongs.map((song: TypeSong, index) => ({
-    key: index + 1,
-    number: (index + 1).toString(),
-    title: song.songName,
-    genre: song.genreId,
-    addedDate: song.publicDate,
-    duration: song.duration,
-    action: (
-      <Button
-        className="custom-button"
-        onClick={() => {
-          handleAddSongToPlayist(song.songId, playListDetailById.id);
-        }}
-      >
-        Thêm
-      </Button>
-    ),
-    description: song.description,
-    image: song.songImage,
-    artist: song.userId,
-  }));
 
   const playlistData =
     dataPlaylist?.song_details?.map((playlistSong: SongDto, index: number) => {
@@ -347,16 +348,6 @@ const PlaylistComponent = () => {
         className: rowClassName,
       };
     }) || [];
-
-  // filter search
-  const filteredData = data.filter(
-    (song) =>
-      song.title.toLowerCase().includes(searchQuery) ||
-      users
-        .find((user) => user.userId === song.artist)
-        ?.name.toLowerCase()
-        .includes(searchQuery)
-  );
 
   // tính tổng thời gian của các bài hát trong playlist
   const parseDurationToSeconds = (duration: string) => {
@@ -440,7 +431,7 @@ const PlaylistComponent = () => {
         <Table
           pagination={false}
           columns={columns}
-          dataSource={playlistData}
+          dataSource={dataPlaylist?.song_details}
           style={{
             marginTop: "20px",
           }}
@@ -450,7 +441,6 @@ const PlaylistComponent = () => {
             },
           })}
           className="custom-transparent-table"
-          rowClassName={(record) => record.className}
         />
       )}
 
@@ -515,7 +505,7 @@ const PlaylistComponent = () => {
             className="custom-transparent-table"
             columns={columns} // Đảm bảo bạn đã định nghĩa `columns`
             showHeader={false}
-            dataSource={filteredData}
+            dataSource={dataSearchSong?.data.data}
             pagination={{
               pageSize: 10,
               showSizeChanger: true,
