@@ -20,6 +20,14 @@ export class UserService {
     );
   }
 
+  async findOne(id: number) {
+    return lastValueFrom(
+      this.userService
+        .send('findOneUser', id)
+        .pipe(handleRetryWithBackoff(3, 1000)),
+    );
+  }
+
   async getSingerDetail(id: number, user_id: number) {
     return lastValueFrom(
       this.userService

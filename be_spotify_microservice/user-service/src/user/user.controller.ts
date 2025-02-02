@@ -1,4 +1,4 @@
-import { Controller, Query } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';

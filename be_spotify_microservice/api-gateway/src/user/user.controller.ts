@@ -43,4 +43,10 @@ export class UserController {
     // console.log('check id: ' + id);
     return this.userService.getSingerDetail(+id, user_id);
   }
+
+  @Get('me')
+  myProfile(@Req() req: Express.Request) {
+    const { id } = req.user as TokenPayload;
+    return this.userService.findOne(id);
+  }
 }

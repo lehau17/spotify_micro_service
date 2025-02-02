@@ -8,6 +8,7 @@ import GenreAndSong from "../modules/UserModule/genreAndSong/GenreAndSong";
 import LoginForm from "@/modules/AuthModule/Login/Login";
 import RecentSong from "@/modules/UserModule/recent-song/RecentSong";
 import PopularSinger from "@/modules/UserModule/popularSinger/Popular";
+import Profile from "@/modules/UserModule/profile/profile";
 
 const useRoutesElements = () => {
   const isAuthenticated = !!localStorage.getItem("access_token"); // Kiểm tra accessToken
@@ -21,6 +22,10 @@ const useRoutesElements = () => {
         <Navigate to="/login" replace />
       ),
       children: [
+        {
+          path: "profile",
+          element: <Profile />,
+        },
         {
           path: "home",
           element: <HomePage />,
