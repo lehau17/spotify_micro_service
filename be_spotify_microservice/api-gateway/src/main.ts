@@ -24,7 +24,7 @@ async function bootstrap() {
       new winston.transports.Http({
         host: 'localhost', // Tên container Logstash hoặc IP của Logstash
         port: 5044, // Cổng kết nối với Logstash
-        level: 'error',
+        level: 'info',
       }),
       new winston.transports.Console(),
     ],
