@@ -39,7 +39,7 @@ export class BlackListGuard implements CanActivate {
     // Kiểm tra nếu id người dùng có tồn tại trong Redis (blacklist)
     const isExist = await this.redis.exists(String(id));
 
-    if (isExist === 0) {
+    if (isExist !== 0) {
       throw new ForbiddenException('Tai khoan khong kha dung');
     }
 
